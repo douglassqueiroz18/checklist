@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./nova_estrutura_checklist/flask-mvc/project"
+    ]
+}

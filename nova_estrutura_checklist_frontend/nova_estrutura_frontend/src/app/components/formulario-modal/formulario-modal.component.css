@@ -1,0 +1,73 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Escurece o fundo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  text-align: center;
+}
+
+.modal-actions {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-around;
+}
+/* Para telas grandes */
+.container {
+  width: 80%;
+}
+
+/* Para telas médias */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+  }
+}
+
+/* Para telas pequenas */
+@media (max-width: 480px) {
+  .container {
+    width: 100%;
+  }
+}
+/* Estilo do campo de entrada no modal */
+.modal-content mat-form-field {
+  width: 100%; /* Campo de input ocupa toda a largura do modal */
+  margin-bottom: 20px; /* Espaço entre os elementos */
+}
+/* Melhorando o input dentro do mat-chip */
+mat-chip input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Adiciona uma borda e uma sombra leve ao focar */
+
+
+/* Ajuste para melhor espaçamento dentro do chip */
+mat-chip {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background: #f5f5f5; /* Cor de fundo suave */
+  border-radius: 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}

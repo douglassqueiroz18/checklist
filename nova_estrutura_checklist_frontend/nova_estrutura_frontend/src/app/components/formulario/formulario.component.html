@@ -1,0 +1,14 @@
+<div class="form-group">
+  <label for="setor">Setor:</label>
+  <select id="setor" [(ngModel)]="setores">
+    <option value="todos">Todos os setores</option>
+    <option *ngFor="let setor of setores" [value]="setor.descricao">{{ setor.descricao }}</option>
+  </select>
+</div>
+<div class="form-group">
+  <label for="usuario">Usuarios:</label>
+  <select id="usuario" [(ngModel)]="usuario">
+    <option value="todos">Todos os usuários</option>
+    <option *ngFor="let usuario of usuarios" [value]="usuario.id">{{ usuario.name }}</option>
+  </select>
+</div>

@@ -1,0 +1,77 @@
+<div class="container">
+  <!-- Relatórios criados -->
+  <form class="form-group">
+    <h1>Formulários Criados</h1>
+    <!-- Indicador de carregamento -->
+    <div *ngIf="carregando" class="loading">
+      Carregando formulários, aguarde...
+    </div>
+    <mat-card class="form-card">
+      <!-- Mensagem de erro -->
+      <div *ngIf="erro" class="error">
+        <p>{{ erro }}</p>
+        <button (click)="recarregar()">Tentar novamente</button>
+      </div>
+    
+      <!-- Lista de formulários -->
+      <ul *ngIf="!carregando && !erro && formulariosCriados.length > 0" class="form-list">
+        <li *ngFor="let formulario of formulariosCriados">
+          {{ formulario.nome }}
+          <button id="delete" (click)="deletarFormulariosCriados(formulario.id_formulario)">Delete</button>
+          <button mat-button (click)="abrirModalFormulario(formulario)">Editar</button>
+        </li>
+      </ul>
+    </mat-card>
+    <!-- Mensagem caso não haja formulários -->
+    <div *ngIf="!carregando && !erro && formulariosCriados.length === 0">
+      <p>Nenhum formulário criado foi encontrado.</p>
+    </div>
+  </form>
+
+  <!-- Seção de adicionar formulário -->
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Adicionar Formulário</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="add-form-section">
+        <button mat-raised-button color="primary" (click)="abrirModal()">Adicionar Formulário</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="modalAberto" class="modal">
+    <div class="modal-content">
+      <h2>Adicionar Informações</h2>
+      <form (ngSubmit)="salvarFormulario()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome do Formulário</mat-label>
+          <input matInput [(ngModel)]="novoFormulario.nome" name="nome" required />
+        </mat-form-field>
+  
+        <h3>Adicionar Itens</h3>
+        <mat-form-field appearance="outline">
+          <mat-label>Descrição do Item</mat-label>
+          <input matInput [(ngModel)]="descricao" name="descricao" />
+        </mat-form-field>
+        <button mat-raised-button color="accent" type="button" (click)="criarItem()">Adicionar Item</button>
+  
+  
+        <!-- Lista de itens adicionados -->
+        <ul *ngIf="itens && itens.length > 0; else noItems">
+          <li *ngFor="let item of itens">{{ item.descricao }}</li>
+        </ul>
+
+        <!-- Exibe uma mensagem caso não haja itens -->
+        <ng-template #noItems>
+          <p>Nenhum item encontrado.</p>
+        </ng-template>
+  
+        <div class="modal-actions">
+          <button mat-raised-button color="primary" type="submit">Salvar</button>
+          <button mat-button color="warn" (click)="fecharModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

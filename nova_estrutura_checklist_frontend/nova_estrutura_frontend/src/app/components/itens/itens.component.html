@@ -1,0 +1,43 @@
+<form (ngSubmit)="salvarItem()">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>{{ itemEmEdicao ? 'Editar Item' : 'Adicionar Item' }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field appearance="fill">
+        <mat-label>Descrição</mat-label>
+        <input matInput [(ngModel)]="descricao" name="descricao" required />
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">{{ itemEmEdicao ? 'Salvar' : 'Enviar' }}</button>
+      <button mat-raised-button color="accent" type="button" (click)="cancelarEdicao()">Cancelar</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
+
+<!-- Exibe a mensagem de sucesso quando um item for criado -->
+<div *ngIf="sucessoCriacao" class="sucesso-notificacao">
+  <p>Item criado com sucesso!</p>
+</div>
+
+<div *ngIf="itens.length > 0; else semItens">
+  <div *ngFor="let item of itens">
+    <mat-card class="itens-list">
+      <mat-card-content>
+        <p>{{ item.descricao }}</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="warn" (click)="deletarItem(item.id)">Excluir</button>
+        <button mat-raised-button color="primary" (click)="editarItem(item)">Editar</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #semItens>
+  <p>Nenhum item encontrado</p>
+</ng-template>

@@ -1,0 +1,151 @@
+
+body { 
+  font-family: Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column; /* Organiza os elementos em coluna */
+  gap: 20px; /* Espaço entre as seções */
+  align-items: center;
+  padding-top: 2rem;
+  
+}
+
+.form-group {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px 0;
+  padding: 20px; /* Aumentando o padding para mais espaço interno */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+}
+
+.add-form-section {
+  display: flex;
+  justify-content: center; /* Centraliza o botão */
+  margin: 20px 0; /* Espaçamento acima e abaixo */
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* Mais escuro e suave */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease; /* Efeito de transição */
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px; /* Borda mais arredondada */
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Sombra mais suave */
+  width: 450px;
+  max-width: 90%;
+  transform: scale(0.9);
+  animation: fadeIn 0.3s ease-out forwards;
+}
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 20px; /* Mais espaço entre os campos */
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.modal-actions button {
+  padding: 10px 20px; /* Aumentando o padding para botões mais espaçados */
+  font-size: 14px; /* Ajustando o tamanho da fonte */
+}
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 6px; /* Borda arredondada */
+}
+.loading {
+  font-size: 14px;
+  color: #555;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+.version-info {
+  font-size: 8pt;
+  float: right;
+}
+@media (max-width: 768px) {
+  .form-card {
+    padding: 12px;
+  }
+  .container {
+    padding: 1rem;
+  }
+}
+button[type="submit"]:hover {
+  background-color: #303f9f; /* Efeito de hover */
+}
+
+button[mat-button] {
+  color: #f44336; /* Cor de cancelamento */
+  border: 1px solid #f44336;
+}
+
+button[mat-button]:hover {
+  background-color: #ffebee; /* Efeito de hover */
+}
+mat-label {
+  font-size: 18px; /* Tamanho maior */
+  font-weight: bold; /* Deixa o texto mais forte */
+  color: #333; /* Cor mais escura para melhor contraste */
+  margin-bottom: 10px; /* Espaçamento inferior para dar mais distância ao campo */
+}
+#delete{
+  color: white;
+  background-color: #f44336;
+  font-weight: bold;
+  display: flex;
+  margin-left: auto; /* Isso empurra o botão para a direita */
+  padding: 10px 20px; /* Ajuste de espaço interno */
+  border: none;
+  border-radius: 6px; /* Arredondamento igual aos outros botões */
+  transition: background-color 0.4s ease, transform 0.1s ease;
+  display: inline-flex;
+
+  cursor: pointer;
+}
+#edit{
+  color: white;
+  background-color: #f3dc0c;
+  font-weight: bold;
+  display: flex;
+  margin-left: auto; /* Isso empurra o botão para a direita */
+  padding: 10px 20px; /* Ajuste de espaço interno */
+  border: none;
+  cursor: pointer;
+}
+.form-list li {
+  display: flex;
+  justify-content: space-between; /* Nome à esquerda, botões à direita */
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd; /* Linha separadora opcional */
+}

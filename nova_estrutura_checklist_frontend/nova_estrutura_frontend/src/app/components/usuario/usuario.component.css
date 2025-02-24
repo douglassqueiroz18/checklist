@@ -1,0 +1,104 @@
+.usuarios-card {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    background: linear-gradient(to bottom, #f0f0f0, #ffffff); /* Gradiente de cinza claro para branco */
+}
+
+.mat-card-header {
+    background-color: #e0e0e0; /* Cor de fundo do cabeçalho */
+}
+
+.mat-card-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.mat-card-content p {
+    font-size: 16px;
+    color: #555;
+}
+
+button {
+    margin-right: 10px;
+}
+
+.mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sucesso-notificacao {
+    background-color: #4caf50;  /* Cor de fundo verde */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.mat-table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.mat-column-nome, .mat-column-email, .mat-column-setor {
+    padding: 12px;
+    text-align: left;
+}
+.usuarios-card-header {
+    background-color: #4CAF50; /* Cor de fundo verde */
+    color: white; /* Cor do texto em branco */
+    padding: 16px;
+    border-radius: 8px 8px 0 0; /* Bordas arredondadas no topo */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+  }
+  
+  .usuarios-card-header .mat-card-title {
+    font-size: 22px; /* Tamanho maior do título */
+    font-weight: bold; /* Deixa o título em negrito */
+    letter-spacing: 1px; /* Espaçamento entre as letras */
+    text-transform: uppercase; /* Transforma o texto para letras maiúsculas */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Sombra do texto para mais destaque */
+  }
+  mat-select .mat-option {
+    opacity: 1 !important;
+  }
+  .mat-icon-button {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  
+  .mat-form-field {
+    position: relative;
+  }
+  
+  .mat-icon {
+    color: #757575; /* Cor cinza para o ícone */
+    transition: color 0.3s ease;
+  }
+  
+  .mat-icon:hover {
+    color: #000; /* Destaca o ícone ao passar o mouse */
+  }
+  
+  .bolinha {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 8px; /* Espaçamento entre a bolinha e o campo */
+    transition: background-color 0.3s ease; /* Suaviza a transição da cor */
+}
+
+.bolinha-verde {
+    background-color: #4caf50; /* Verde - senha visível */
+}
+
+.bolinha-vermelha {
+    background-color: #f44336; /* Vermelho - senha oculta */
+}

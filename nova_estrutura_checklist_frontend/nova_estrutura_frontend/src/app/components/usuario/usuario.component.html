@@ -1,0 +1,82 @@
+<mat-card class="usuarios-card">
+  <mat-card-header class="usuarios-card-header">
+    <mat-card-title>Usuários Cadastrados</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-header>
+    <mat-card-title>Adicionar Usuário</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Formulário de Adicionar Usuário -->
+    <form (ngSubmit)="criarUsuario()" #usuarioForm="ngForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Nome</mat-label>
+        <input matInput placeholder="Nome do Usuário" [(ngModel)]="novoUsuario.name" name="name" required>
+      </mat-form-field>
+
+  <mat-form-field appearance="fill">
+      <mat-label>Senha</mat-label>
+      <input matInput 
+            placeholder="Senha do Usuário" 
+            [type]="senhaVisivel ? 'text' : 'password'" 
+            [(ngModel)]="novoUsuario.senha" 
+            name="senha" 
+            required>
+      <span class="bolinha" 
+            [ngClass]="senhaVisivel ? 'bolinha-verde' : 'bolinha-vermelha'" 
+            (click)="toggleSenhaVisivel()">
+      </span>
+  </mat-form-field>
+    
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput placeholder="Email do Usuário" [(ngModel)]="novoUsuario.email" name="email" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Setor</mat-label>
+        <mat-select [(ngModel)]="novoUsuario.setor" name="setor" required>
+          <mat-option *ngFor="let setor of setores" [value]="setor">{{ setor.descricao }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!usuarioForm.form.valid">Adicionar Usuário</button>
+      </div>
+    </form>
+
+    <!-- Exibe a tabela apenas se houver usuários cadastrados -->
+    <div *ngIf="usuarios.length > 0; else semUsuarios">
+      <table mat-table [dataSource]="usuarios" class="mat-elevation-z8 full-width">
+        <!-- Coluna Nome -->
+        <ng-container matColumnDef="nome">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let usuario">{{ usuario.name }}</td>
+        </ng-container>
+
+        <!-- Coluna Email -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let usuario">{{ usuario.email }}</td>
+        </ng-container>
+
+        <!-- Coluna Setor -->
+        <ng-container matColumnDef="setor">
+          <th mat-header-cell *matHeaderCellDef>Setor</th>
+          <td mat-cell *matCellDef="let usuario">{{ usuario.setor }}</td>
+        </ng-container>
+
+        <!-- Cabeçalho da tabela -->
+        <tr mat-header-row *matHeaderRowDef="['nome', 'email', 'setor']"></tr>
+        <!-- Corpo da tabela -->
+        <tr mat-row *matRowDef="let row; columns: ['nome', 'email', 'setor'];"></tr>
+      </table>
+    </div>
+
+    <!-- Mensagem exibida caso não haja usuários -->
+    <ng-template #semUsuarios>
+      <p>Nenhum usuário encontrado.</p>
+    </ng-template>
+  </mat-card-content>
+</mat-card>

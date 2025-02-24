@@ -1,0 +1,34 @@
+<div class="modal-overlay" *ngIf="modalAberto">
+  <div class="modal-content">
+    <!-- O título começa com o valor de 'titulo', mas pode ser alterado pelo usuário -->
+    <h2>
+      <mat-form-field appearance="fill" *ngIf="formulariosCriados.length > 0">
+        <mat-label>Título do Formulárioo</mat-label>
+        <input matInput [(ngModel)]="formulariosCriados[0].nome" 
+        placeholder="Digite o título do formulário">
+      </mat-form-field>
+    </h2>
+
+    <form (ngSubmit)="editarFormularioModal(formulariosEmEdicao)">
+      <!-- Exibe os itens do formulário se existirem -->
+       
+      <ul *ngIf="formularioTeste && formularioTeste.length > 0; else noItems">
+        <mat-chip-listbox >
+          <mat-chip 
+          *ngFor="let itemPorFormulario of formularioTeste">
+            <input matInput [(ngModel)]="itemPorFormulario.descricao" name="descricao" placeholder="Editar item" [readonly]="false">
+          </mat-chip>
+        </mat-chip-listbox>
+      </ul>
+      <!-- Exibe uma mensagem caso não haja itens -->
+      <ng-template #noItems>
+        <p>Nenhum item encontradoooo.</p>
+      </ng-template>
+
+      <div class="modal-actions">
+        <button mat-raised-button color="primary" type="submit">Salvar</button>
+        <button mat-button type="button" (click)="fecharModalFormulario()">Fechar</button>
+      </div>
+    </form>
+  </div>
+</div>
