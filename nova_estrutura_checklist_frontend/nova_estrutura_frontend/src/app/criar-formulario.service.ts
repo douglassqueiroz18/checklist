@@ -28,15 +28,15 @@ export class CriarFormularioService {
     });
     return this.http.delete(`${this.apiUrlDeleteFormulariosCriados}/${id_formulario}`, {headers});
   }
-  atualizarFormulario(formulariosCriados: any): Observable<any> {
-    console.log("Chamando Put para:",`${this.apiUrlUpdateFormulariosCriados}/${formulariosCriados.id_formulario}`,'com dados', formulariosCriados);
+  atualizarFormulario(formulario: any): Observable<any> {
+    console.log("Chamando Put para:",`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`,'com dados', formulario);
   
   const formularioAtualizado = {
-    id_formulario: formulariosCriados.id_formulario,
-    nome: formulariosCriados.nome,
-    status: formulariosCriados.status
+    id_formulario: formulario.id_formulario,
+    nome: formulario.nome,
+    status: formulario.status
   };
-  return this.http.put(`${this.apiUrlUpdateFormulariosCriados}/${formulariosCriados.id_formulario}`, formularioAtualizado,{
+  return this.http.put(`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`, formularioAtualizado,{
     headers: new HttpHeaders({
 
     })

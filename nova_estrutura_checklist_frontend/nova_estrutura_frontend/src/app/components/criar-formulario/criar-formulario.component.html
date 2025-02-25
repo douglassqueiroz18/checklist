@@ -40,7 +40,7 @@
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="modalAberto" class="modal">
+  <div *ngIf="modalAberto" class="modal" [attr.inert]="modalAberto ? true : null">
     <div class="modal-content">
       <h2>Adicionar Informações</h2>
       <form (ngSubmit)="salvarFormulario()">

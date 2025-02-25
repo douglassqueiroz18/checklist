@@ -1,32 +1,27 @@
 <div class="modal-overlay" *ngIf="modalAberto">
   <div class="modal-content">
-    <!-- O título começa com o valor de 'titulo', mas pode ser alterado pelo usuário -->
-    <h2>
-      <mat-form-field appearance="fill" *ngIf="formulariosCriados.length > 0">
-        <mat-label>Título do Formulárioo</mat-label>
-        <input matInput [(ngModel)]="formulariosCriados[0].nome" 
-        placeholder="Digite o título do formulário">
-      </mat-form-field>
-    </h2>
+    <form (ngSubmit)="editarFormularioModal(formularioTeste)">
+      <h2>
+        <mat-form-field appearance="fill" *ngIf="formulario && formulario.nome">
+          <mat-label>Título do Formulário</mat-label>
+          <input matInput [(ngModel)]="formulario.nome" name="tituloFormulario" placeholder="Digite o título do formulário">
+        </mat-form-field>
+      </h2>
+      <div *ngIf="formularioTeste && formularioTeste.length > 0">
+        <mat-form-field appearance="fill" *ngFor="let item of formularioTeste">
+          <mat-label>Item</mat-label>
+          <input matInput [(ngModel)]="item.descricao" name="descricao-{{ item.id }}">
+        </mat-form-field>
 
-    <form (ngSubmit)="editarFormularioModal(formulariosEmEdicao)">
-      <!-- Exibe os itens do formulário se existirem -->
-       
-      <ul *ngIf="formularioTeste && formularioTeste.length > 0; else noItems">
-        <mat-chip-listbox >
-          <mat-chip 
-          *ngFor="let itemPorFormulario of formularioTeste">
-            <input matInput [(ngModel)]="itemPorFormulario.descricao" name="descricao" placeholder="Editar item" [readonly]="false">
-          </mat-chip>
-        </mat-chip-listbox>
-      </ul>
-      <!-- Exibe uma mensagem caso não haja itens -->
-      <ng-template #noItems>
-        <p>Nenhum item encontradoooo.</p>
-      </ng-template>
-
+      </div>
+      <p *ngIf="formularioTeste && formularioTeste.length === 0">
+        Nenhum item encontrado.
+      </p>
       <div class="modal-actions">
-        <button mat-raised-button color="primary" type="submit">Salvar</button>
+        <button mat-raised-button color="primary" type="submit" >Salvar</button>
+        <button mat-raised-button color="primary" type="button" *ngFor="let item of formularioTeste" mat-icon-button (click)="editarItem(item)">
+          Salvar Item
+        </button>
         <button mat-button type="button" (click)="fecharModalFormulario()">Fechar</button>
       </div>
     </form>

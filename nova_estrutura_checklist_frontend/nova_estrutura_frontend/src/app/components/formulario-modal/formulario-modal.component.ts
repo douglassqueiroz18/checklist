@@ -8,10 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { CriarFormularioService } from '../../criar-formulario.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+
 @Component({
   selector: 'app-formulario-modal',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatChipsModule, MatIconModule, ],
+  imports: [CommonModule, MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatChipsModule, MatIconModule,MatListModule ],
   templateUrl: './formulario-modal.component.html',
   styleUrl: './formulario-modal.component.css'
 })
@@ -43,8 +45,12 @@ constructor(
 )
 {
   // Atribuindo os dados recebidos ao título e formulário
-  this.titulo = data.titulo;
-  this.formulario = data.formulario;
+  if (data && data.formulario) {
+    this.formulario = data.formulario;
+  } else {
+    console.warn('Nenhum formulário foi recebido!');
+  }
+  this.titulo = data.titulo || '';  // Atribuindo título
 }
 
 ngAfterViewInit() {
@@ -61,6 +67,7 @@ fecharModalFormulario() {
 
 ngOnInit() {
   //this.carregarFormularios();
+
   this.carregarItens();
   this.ItensService.obterItens().subscribe(
     (data: any[]) => {
@@ -84,7 +91,8 @@ carregarItens() {
     console.warn('Nenhum formulário selecionado para carregar os itens.');
     return;
   }
-  this.itens=[];
+  this.itens = [];
+
   this.ItensService.obterItensPorFormulario(this.formulario.id_formulario).subscribe(
     (data: any[]) => {
       this.ngZone.run(() => {
@@ -92,53 +100,31 @@ carregarItens() {
         this.formularioTeste = data.map(itemPorFormulario => ({
           id: itemPorFormulario.id || itemPorFormulario.Id || null,
           descricao: itemPorFormulario.item || itemPorFormulario.itemDescricao || 'Descrição não encontrada'
-          
         }));
+        console.log("teste para saber os itens", this.formularioTeste);
         this.cdRef.detectChanges();
         console.log('Itens recebidos no formulario-modal.component.ts:', this.formularioTeste);
       });
     },
-      (error: any) => {
-        console.error('Erro ao obter itens no formulario-modal.component.ts:', error);
-      }
-    );
-  }
-/*
-carregarFormularios(): void {
-  this.carregando = true;
-  this.erro = null;
-
-  this.CriarFormularioService.obterFormulariosCriados().subscribe(
-    (data: any[]) => {
-      this.carregando = false;
-      if (data && Array.isArray(data)) {
-        this.formulariosCriados = data.map((formularioCriado) => ({
-          id_formulario: formularioCriado.id_formulario,
-          nome: formularioCriado.nome,
-          itens: formularioCriado.itens || []  // Garante que 'itens' sempre exista
-        }));
-      } else{
-        this.formulariosCriados = [];  // Retorna uma lista vazia se data for null ou não for um array
-      }
-      console.log("Formulários carregados:", this.formulariosCriados);
-      this.cdRef.detectChanges();
-    },
     (error: any) => {
-      this.carregando = false;
-      this.erro = 'Erro ao carregar os formulários. Por favor, tente novamente.';
+      console.error('Erro ao obter itens no formulario-modal.component.ts:', error);
     }
   );
-}*/
-  editarFormularioModal(formulariosCriados: any) {
-    console.log("teste douglas1", this.formulariosCriados.map(formulario => formulario.id_formulario));
+}
 
-    var formularioASerEditado = this.formulariosCriados[0];  // ou outro índice, ou uma lógica para pegar o formulário desejado
 
-    console.log("teste douglas1", formularioASerEditado);
-    
-    this.CriarFormularioService.atualizarFormulario(formularioASerEditado).subscribe(
-      (res) => {
-        console.log("Formulário atualizado com sucesso:", res);
+  editarFormularioModal(formularioAtualizar: any) {
+    const id_a_ser_editado = this.formulario.id_formulario;
+    const formularioParaAtualizar = {
+      id_formulario: this.formulario.id_formulario, 
+      nome: this.formulario.nome, 
+      status: this.formulario.status  // Inclua todos os campos necessários para a atualização
+    };
+    console.log("Formulario a ser enviado para atualização:", formularioParaAtualizar);
+  
+    this.CriarFormularioService.atualizarFormulario(formularioParaAtualizar).subscribe(
+      () => {
+
         this.fecharModalFormulario(); // Fecha o modal após salvar
         location.reload();
       },
@@ -147,20 +133,26 @@ carregarFormularios(): void {
       }
     );
   }
-  editarItem(id: any){
-    console.log('Editando item com ID:', id);
-
-   this.ItensService.atualizarItem(id).subscribe(
-    (updatedItem)=> {
+  editarItem(formularioTeste: any){
+    console.log("chamando a atualização do item com o item", this.formularioTeste);
+    console.log("teste para ver o que está vindo", formularioTeste);
+    const itemAtualizado = {
+      id: formularioTeste.id,        // Envia o ID do item na URL
+      item: formularioTeste.descricao || ''  // Envia a descrição do item ou qualquer outro campo relevante
+    };
+   this.ItensService.atualizarItem(itemAtualizado).subscribe(
+    (updatedItem) => {
       this.itemParaEdicao = updatedItem;
-      console.log('Item para edição', updatedItem);
+      console.log("Item enviado para edicao no formulario-modal.component", this.itemParaEdicao);
+      setTimeout(() => {
+        console.log("Item atualizado:", this.itemParaEdicao);
+      }, 100); // Espera 1 segundo antes de exibir no console
     },
     (error) => {
       console.error('Erro ao obter item', error);
     }
   );
   }
-   
 }
   
 

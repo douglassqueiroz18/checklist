@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -47,21 +47,32 @@ deletarItensPorFormulario(formularioId: number): Observable<any> {
   return this.http.delete(`/api/itens/delete/${formularioId}`);
 }
 atualizarItem(item: any): Observable<any> {
-  console.log('Chamando PUT para:', `${this.apiUrlUpdateItens}/${item.id}`, 'com dados:', item);
+  console.log('Chamando PUT para:', `${this.apiUrlUpdateItens}/${item.id}`, 'com dados:', item.item);
+  console.log('Conteúdo do item:', item);
     // Ajustar para enviar o campo correto para o backend
   const itemAtualizado = {
     id: item.id,
-    descricao: item.descricao,  // Mantendo a estrutura que você tem no frontend
-    item: item.descricao  // Envia a chave 'item' esperada pelo backend
+    item: item.item  // Envia a chave 'item' esperada pelo backend
   };
+  console.log("conteudo que será utilizado para atualizar",itemAtualizado);
   return this.http.put(`${this.apiUrlUpdateItens}/${item.id}`, itemAtualizado, {
     //return this.http.put(`http://localhost:5000/api/itens/update/${item.id}`, item, {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     })
-  });
+  }).pipe(
+    tap(
+      (response: any) => {
+        console.log('Resposta indo ao backend', response);
+      },
+      (error: HttpErrorResponse) => {
+        console.log('Erro ao atualizar', error);
+      }
+    )
+  );
 }
+
 obterItemPorId(item: any): Observable<any>{
   const url = `${this.apiUrlGetItensporId}/${item.id}`; // Formata a URL corretamente
   return this.http.get(url);
