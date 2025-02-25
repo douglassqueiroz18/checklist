@@ -95,7 +95,7 @@ export class CriarFormularioComponent implements OnInit {
   }
   abrirModal(): void {
     this.modalAberto = true;
-  
+    console.log("abrindo o modal do para criar formulario");
     // Se for um novo formulário, cria um ID temporário, mas NÃO chama carregarItens()
     if (!this.novoFormulario.id_formulario) {
       this.novoFormulario = {

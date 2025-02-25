@@ -47,6 +47,7 @@ body {
   justify-content: center;
   align-items: center;
   transition: opacity 0.3s ease; /* Efeito de transição */
+  z-index: 1000;
 }
 
 .modal-content {

@@ -12,8 +12,9 @@
         <p>{{ erro }}</p>
         <button (click)="recarregar()">Tentar novamente</button>
       </div>
-    
       <!-- Lista de formulários -->
+           <!---->
+
       <ul *ngIf="!carregando && !erro && formulariosCriados.length > 0" class="form-list">
         <li *ngFor="let formulario of formulariosCriados">
           {{ formulario.nome }}
@@ -40,7 +41,7 @@
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="modalAberto" class="modal" [attr.inert]="modalAberto ? true : null">
+  <div *ngIf="modalAberto" class="modal" [ngClass]="{'inert': modalAberto}">
     <div class="modal-content">
       <h2>Adicionar Informações</h2>
       <form (ngSubmit)="salvarFormulario()">

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, NgZone, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ItensService } from '../../itens.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -39,6 +39,7 @@ export class FormularioModalComponent {
 constructor(
   @Inject(MAT_DIALOG_DATA) public data: any,  // Recebe os dados passados pelo componente pai
   private ItensService: ItensService,
+  private dialogRef: MatDialogRef<FormularioModalComponent>, // Adicionar referência ao dialog
   private CriarFormularioService: CriarFormularioService,
   private cdRef: ChangeDetectorRef,
   private ngZone: NgZone
@@ -62,7 +63,9 @@ abrirModalFormulario(){
 }
 fecharModalFormulario() {
   this.modalAberto = false;
-  this.fechar.emit(); // Emite evento para fechar o modal
+  this.dialogRef.close(); // Fechar modal corretamente
+
+  //this.fechar.emit(); // Emite evento para fechar o modal
 }
 
 ngOnInit() {
