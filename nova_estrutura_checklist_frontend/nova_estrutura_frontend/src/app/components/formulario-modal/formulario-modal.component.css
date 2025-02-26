@@ -71,3 +71,33 @@ mat-chip {
   border-radius: 20px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
+.item-container {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+mat-form-field {
+  flex: 1;
+  margin: 0;
+}
+
+.delete-button {
+  color: white;
+  background-color: #f44336;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espaço entre ícone e texto */
+  padding: 10px 20px; /* Ajuste de espaço interno */
+  border: none;
+  border-radius: 6px; /* Arredondamento igual aos outros botões */
+  transition: background-color 0.4s ease, transform 0.1s ease;
+  cursor: pointer;
+  min-width: 120px; /* Evita que o botão fique muito pequeno */
+  white-space: nowrap; /* Impede que o texto quebre */
+  transform: translateY(-5px)
+
+}

@@ -22,10 +22,13 @@ export class FormularioModalComponent {
   formulariosEmEdicao: any [] = [];
   nome:string= '';
   carregando: boolean = false;
+  sucessoCriacao: boolean = false; // Controla a exibição da mensagem de sucesso
   erro: string | null = null;
   itemPorFormulario: any[] = [];
   formularioTeste: any[] = [];
   itens: any[] = [];
+  descricao = '';  // A descrição será enviada para o backend
+  novoFormulario: { id_formulario: number | null; nome: string; itens:string[] } = { id_formulario: null, nome: '', itens: [] }; // Para o formulário atual
   dadosOriginais: any[] = [];
   titulo: string;
   formulario: any ={};
@@ -79,9 +82,7 @@ ngOnInit() {
         descricao: item.item || item.itemDescricao || 'Descrição não encontradaaaaaa',
         formulario: item.formulario || 'Formulario do item não encontrado'
       }));
-
       this.cdRef.detectChanges();  // Força a atualização da UI
-      
     },
     (error: any) => {
       console.error('Erro ao obter itens:', error);
@@ -104,9 +105,7 @@ carregarItens() {
           id: itemPorFormulario.id || itemPorFormulario.Id || null,
           descricao: itemPorFormulario.item || itemPorFormulario.itemDescricao || 'Descrição não encontrada'
         }));
-        console.log("teste para saber os itens", this.formularioTeste);
         this.cdRef.detectChanges();
-        console.log('Itens recebidos no formulario-modal.component.ts:', this.formularioTeste);
       });
     },
     (error: any) => {
@@ -123,11 +122,9 @@ carregarItens() {
       nome: this.formulario.nome, 
       status: this.formulario.status  // Inclua todos os campos necessários para a atualização
     };
-    console.log("Formulario a ser enviado para atualização:", formularioParaAtualizar);
   
     this.CriarFormularioService.atualizarFormulario(formularioParaAtualizar).subscribe(
       () => {
-
         this.fecharModalFormulario(); // Fecha o modal após salvar
         location.reload();
       },
@@ -137,8 +134,6 @@ carregarItens() {
     );
   }
   editarItem(formularioTeste: any){
-    console.log("chamando a atualização do item com o item", this.formularioTeste);
-    console.log("teste para ver o que está vindo", formularioTeste);
     const itemAtualizado = {
       id: formularioTeste.id,        // Envia o ID do item na URL
       item: formularioTeste.descricao || ''  // Envia a descrição do item ou qualquer outro campo relevante
@@ -146,7 +141,6 @@ carregarItens() {
    this.ItensService.atualizarItem(itemAtualizado).subscribe(
     (updatedItem) => {
       this.itemParaEdicao = updatedItem;
-      console.log("Item enviado para edicao no formulario-modal.component", this.itemParaEdicao);
       setTimeout(() => {
         console.log("Item atualizado:", this.itemParaEdicao);
       }, 100); // Espera 1 segundo antes de exibir no console
@@ -156,6 +150,49 @@ carregarItens() {
     }
   );
   }
-}
-  
+  criarItem() {
+    console.log('dados que estão indo dentro do criar item variavel descricao', this.descricao);
+    console.log('dados que estão indo dentro do criar item variavel formulario', this.formulario);
 
+    if (!this.descricao.trim()) {
+      console.error('A descrição do item não pode estar vazia.');
+      return;
+    }
+    const body = {
+      item: this.descricao,
+      formulario: this.novoFormulario.nome,
+      id_formulario: this.novoFormulario.id_formulario
+    };
+    console.log('corpo de criar item',body);
+    this.ItensService.enviarItem(body, this.formulario.nome, this.formulario.id_formulario).subscribe(
+      (response: any) => {
+        const novoItem = { item: response.id_formulario, descricao: response.descricao, formulario: response.formulario, id_formulario: response.id_formulario };  // Supondo que o 'response' tenha a estrutura correta
+        this.itens.push(novoItem);
+        // Agora limpa o campo 'descricao' após a requisição ser bem-sucedida
+        this.descricao = '';  // Limpa a variável de descrição após o envio
+        this.sucessoCriacao = true;  // Ativa a exibição da mensagem de sucesso
+  
+        setTimeout(() => {
+          this.sucessoCriacao = false;  // Desativa após 3 segundos
+        }, 3000); 
+      },
+      (error: any) => {
+        console.error('Erro ao criar item:', error);
+      }
+    );
+  }
+  deletarItem(itemId: string) {
+    this.formularioTeste = this.formularioTeste.filter(item => item.id !== itemId);
+    console.log('testando o deletar item',this.formularioTeste);
+    this.ItensService.deletarItem(itemId).subscribe({
+      next: () => {
+        console.log('Item deletado com sucesso!');
+        alert('Item deletado com sucesso!');
+      },
+      error: (err) => {
+        console.error('Erro ao deletar item:', err);
+        alert('Erro ao deletar item.');
+      }
+    });
+  }
+}

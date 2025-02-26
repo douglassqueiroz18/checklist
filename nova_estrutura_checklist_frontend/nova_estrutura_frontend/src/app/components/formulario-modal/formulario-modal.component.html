@@ -7,21 +7,39 @@
           <input matInput [(ngModel)]="formulario.nome" name="tituloFormulario" placeholder="Digite o título do formulário">
         </mat-form-field>
       </h2>
-      <div *ngIf="formularioTeste && formularioTeste.length > 0">
-        <mat-form-field appearance="fill" *ngFor="let item of formularioTeste">
-          <mat-label>Item</mat-label>
-          <input matInput [(ngModel)]="item.descricao" name="descricao-{{ item.id }}">
-        </mat-form-field>
 
+      <div *ngIf="formularioTeste && formularioTeste.length > 0">
+        <div *ngFor="let item of formularioTeste" class="item-container">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Item</mat-label>
+            <input matInput [(ngModel)]="item.descricao" name="descricao-{{ item.id }}">
+          </mat-form-field>
+          
+          <!-- Botão de deletar ao lado do campo -->
+          <button mat-raised-button color="warn" (click)="deletarItem(item.id)" class="delete-button">
+            Deletar Item
+          </button>
+        </div>
       </div>
+
+      <h3>Adicionar Itens</h3>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Descrição do Item</mat-label>
+          <input matInput [(ngModel)]="descricao" name="descricao" />
+        </mat-form-field>
+        <button mat-raised-button color="accent" type="button" (click)="criarItem()">Adicionar Item</button>
+      </div>
+
       <p *ngIf="formularioTeste && formularioTeste.length === 0">
         Nenhum item encontrado.
       </p>
+
       <div class="modal-actions">
-        <button mat-raised-button color="primary" type="submit" >Salvar</button>
-        <button mat-raised-button color="primary" type="button" *ngFor="let item of formularioTeste" mat-icon-button (click)="editarItem(item)">
-          Salvar Item
-        </button>
+        <button mat-raised-button color="primary" type="submit">Salvar</button>
+        <!--<button mat-raised-button color="primary" type="button" (click)="editarItem(formularioTeste)">
+          Salvar Itens
+        </button> -->
         <button mat-button type="button" (click)="fecharModalFormulario()">Fechar</button>
       </div>
     </form>

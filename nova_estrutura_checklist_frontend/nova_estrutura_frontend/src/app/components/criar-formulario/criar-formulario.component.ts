@@ -48,7 +48,6 @@ export class CriarFormularioComponent implements OnInit {
           id: item.id || item.itemId || null,
           descricao: item.item || item.itemDescricao || 'Descrição não encontrada'
         }));
-        console.log('Itens recebidos no criar-formulario.component.ts:', data);
         this.cdRef.detectChanges();
       },
       (error: any) => {
@@ -64,7 +63,6 @@ export class CriarFormularioComponent implements OnInit {
           id: item.id || item.itemId || null,
           descricao: item.descricao || item.itemDescricao || 'Descrição não encontrada'
         }));
-        console.log(`Itens do formulário ${formularioId} recebidos no criar-formulario.component.ts:`, data);
         this.cdRef.detectChanges();
       },
       (error: any) => {
@@ -95,7 +93,6 @@ export class CriarFormularioComponent implements OnInit {
   }
   abrirModal(): void {
     this.modalAberto = true;
-    console.log("abrindo o modal do para criar formulario");
     // Se for um novo formulário, cria um ID temporário, mas NÃO chama carregarItens()
     if (!this.novoFormulario.id_formulario) {
       this.novoFormulario = {
@@ -164,9 +161,6 @@ export class CriarFormularioComponent implements OnInit {
       this.erro = 'O nome do formulário não pode estar vazio.';
       return;
     }
-
-    console.log('Novo formulário antes de enviar:', this.novoFormulario);
-
     this.criarFormularioService.enviarFormulariosCriados(this.novoFormulario).subscribe(
       (response: any) => {
 
@@ -199,10 +193,6 @@ export class CriarFormularioComponent implements OnInit {
       console.error('A descrição do item não pode estar vazia.');
       return;
     }
-  
-    console.log('Enviando descrição  de item para o backend:', this.descricao);
-    // Não limpe ainda a variável 'descricao'
-    console.log('ID do formulário antes de enviar:', this.novoFormulario?.id_formulario);
     if (!this.novoFormulario?.id_formulario) {
       console.error('Erro: ID do formulário não está definido.');
       return;
@@ -214,10 +204,7 @@ export class CriarFormularioComponent implements OnInit {
     };
     this.ItensService.enviarItem(body, this.novoFormulario.nome, this.novoFormulario.id_formulario).subscribe(
       (response: any) => {
-        console.log("iniciando o processamento da resposta no criar item criar-formulario.component.ts");
-        console.log('Item criado com sucesso no criar-formulario.component:', response);
         const novoItem = { item: response.id_formulario, descricao: response.descricao, formulario: response.formulario, id_formulario: response.id_formulario };  // Supondo que o 'response' tenha a estrutura correta
-        console.log("teste douglas", novoItem);
         this.itens.push(novoItem);
   
         // Agora limpa o campo 'descricao' após a requisição ser bem-sucedida
@@ -234,20 +221,17 @@ export class CriarFormularioComponent implements OnInit {
     );
   }
   salvarFormulario(): void {
-    console.log("Executando o 'salvarFormulario no criar-formulario.component.ts'")
     if (!this.novoFormulario.nome.trim()) {
       this.novoFormulario.id_formulario = Date.now(); // Gera o ID temporário
       this.erro = 'O nome do formulário não pode estar vazio.';
       return; // Não envia o formulário se o nome estiver vazio
     }
     
-    console.log('Novo formulário enviado:', this.novoFormulario);
     this.criarFormularioService.enviarFormulariosCriados(this.novoFormulario).subscribe(
       (response) => {
         
          // Agora, você tem o id_formulario da resposta
       const idFormularioSalvo = this.novoFormulario;  // Supondo que o ID venha na resposta
-      console.log('Testando o ID:', idFormularioSalvo);
 
       // Passa o id_formulario ao salvar os itens
       this.novoFormulario.itens.forEach(item => {
@@ -275,17 +259,13 @@ export class CriarFormularioComponent implements OnInit {
       console.error('ID do formulário não pode ser nulo');
       return;  // Evita tentar deletar um formulário com ID nulo
     }
-  
-    console.log('ID do formulário a ser deletado:', formularioId);
-    
+      
     // Primeiro, vamos carregar os formulários para encontrar o ID correto
     this.carregarFormularios();
     
     // Após os formulários serem carregados, seguimos com a exclusão do formulário
     const formularioIdNumber = Number(formularioId);
-    console.log("debugando o formulairoIDNumber: ", formularioIdNumber);
     const formulario = this.formulariosCriados.find(formulario => formulario.id_formulario === formularioIdNumber);
-    console.log("debugnado o formulario:", formulario);
     
     this.criarFormularioService.deletarFormulario(String(formularioId)).subscribe(
       () => {
@@ -300,7 +280,4 @@ export class CriarFormularioComponent implements OnInit {
       }
     );
   }
-
-  
- 
 }
