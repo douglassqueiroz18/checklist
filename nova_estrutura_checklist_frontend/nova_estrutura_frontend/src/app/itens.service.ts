@@ -1,29 +1,30 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+  import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+  import { Injectable } from '@angular/core';
+  import { Observable, tap } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ItensService {
-  private apiUrlPostItens = '/api/create_itens';
-  private apiUrlGetItens = '/api/itens';    // URL do backend para obter itens
-  private apiUrlDeleteItens = '/api/itens/delete'; // URL do backend para deletar itens
-  private apiUrlUpdateItens = '/api/itens/update'; // URL do backend para atualizar itens
-  private apiUrlGetItensporId = '/api/itens';
-  constructor(private http: HttpClient) {}
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class ItensService {
+    private apiUrlPostItens = '/api/create_itens';
+    private apiUrlGetItens = '/api/itens';    // URL do backend para obter itens
+    private apiUrlDeleteItens = '/api/itens/delete'; // URL do backend para deletar itens
+    private apiUrlUpdateItens = '/api/itens/update'; // URL do backend para atualizar itens
+    private apiUrlGetItensporId = '/api/itens';
+    constructor(private http: HttpClient) {}
 
-  // Método para enviar um novo item ao backend
-  enviarItem(item: any, formulario: any, id_formulario: any): Observable<any> {
-    const body = {
-      item: typeof item === 'object' ? item.item : item,  // ✅ Agora usa o parâmetro correto
-      formulario: formulario,
-      id_formulario: id_formulario
-    };
-    console.log('Chamando POST para para itens.service:', this.apiUrlPostItens, 'com dados:', item);  // Adiciona esse log
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post(this.apiUrlPostItens, body, { headers });
-  }
+    // Método para enviar um novo item ao backend
+    enviarItem(item: any, formulario: any, id_formulario: any, id_status: any): Observable<any> {
+      const body = {
+        item: typeof item === 'object' ? item.item : item,  // ✅ Agora usa o parâmetro correto
+        formulario: formulario,
+        id_formulario: id_formulario,
+        id_status: item.id_status
+      };
+      console.log('Chamando POST para para itens.service:', this.apiUrlPostItens, 'com id_status:', body);  // Adiciona esse log
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+      return this.http.post(this.apiUrlPostItens, body, { headers });
+    }
 
   // Método para obter a lista de itens do backend
   obterItens(): Observable<any> {

@@ -55,6 +55,14 @@
           <mat-label>Descrição do Item</mat-label>
           <input matInput [(ngModel)]="descricao" name="descricao" />
         </mat-form-field>
+        <mat-form-field appearance="outline" class="input-item">
+          <mat-label>Selecione uma opção</mat-label>
+          <mat-select [(ngModel)]="novaOpcaoStatusSelecionada" name="novaOpcao"  (selectionChange)="onOptionSelected($event)">
+            <mat-option *ngFor="let option of options" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
         <button mat-raised-button color="accent" type="button" (click)="criarItem()">Adicionar Item</button>
   
   

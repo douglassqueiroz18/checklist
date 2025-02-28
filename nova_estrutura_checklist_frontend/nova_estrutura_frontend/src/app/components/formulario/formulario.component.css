@@ -1,10 +1,10 @@
 :host {
   display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Alinha ao topo da tela */
-  height: 100vh; /* Ocupa toda a altura da tela */
+  flex-direction: column; /* Empilha os elementos verticalmente */
+  align-items: center;
+  height: 100vh;
   background-color: #f7f7f7;
-  padding-top: 2rem; /* Adiciona um espaçamento no topo */
+  padding-top: 2rem;
 }
 
 .form-group {
@@ -64,3 +64,11 @@ option:first-child {
     padding: 0.6rem; /* Ajusta o padding do select para telas menores */
   }
 }
+.container {
+  display: flex;
+  flex-direction: column; /* Organiza os elementos em coluna */
+  gap: 20px; /* Espaço entre as seções */
+  align-items: center;
+  padding-top: 2rem;
+}
+

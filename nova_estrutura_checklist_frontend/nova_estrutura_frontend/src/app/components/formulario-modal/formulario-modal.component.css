@@ -13,10 +13,10 @@
 
 .modal-content {
   background: white;
-  padding: 30px;
+  padding: 60px;
   border-radius: 8px;
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3);
-  width: 400px;
+  width: 600px;
   text-align: center;
 }
 
@@ -31,9 +31,18 @@
 }
 
 /* Para telas médias */
-@media (max-width: 768px) {
-  .container {
-    width: 95%;
+@media (max-width: 768px) and (min-width: 600px) {
+  .item-container {
+    flex-wrap: wrap; /* Permite que os itens quebrem linha, mas sem forçar coluna */
+    justify-content: space-between;
+  }
+}
+
+/* Agora só empilha completamente em telas menores que 600px */
+@media (max-width: 600px) {
+  .item-container {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
@@ -41,6 +50,8 @@
 @media (max-width: 480px) {
   .container {
     width: 100%;
+    padding: 20px;
+
   }
 }
 /* Estilo do campo de entrada no modal */
@@ -76,13 +87,13 @@ mat-chip {
   align-items: baseline;
   gap: 10px;
   margin-bottom: 10px;
-}
+  flex-wrap: wrap; /* Permite que os elementos quebrem linha */
 
+}
 mat-form-field {
   flex: 1;
   margin: 0;
 }
-
 .delete-button {
   color: white;
   background-color: #f44336;

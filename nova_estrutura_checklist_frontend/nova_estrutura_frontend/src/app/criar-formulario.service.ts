@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,8 @@ export class CriarFormularioService {
   private apiUrlPostFormulariosCriados = '/api/create_formularios'
   private apiUrlDeleteFormulariosCriados = '/api/delete'
   private apiUrlUpdateFormulariosCriados = '/api/edit'
+  private apiUrlPostStatus = '/api/create_status'
+  private apiUrlGetStatus = '/api/status'
   constructor(private http: HttpClient) { }
   obterFormulariosCriados(): Observable<any> {
     return this.http.get(this.apiUrlGetFormulariosCriados);
@@ -36,10 +40,22 @@ export class CriarFormularioService {
     nome: formulario.nome,
     status: formulario.status
   };
-  return this.http.put(`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`, formularioAtualizado,{
-    headers: new HttpHeaders({
-
+  return this.http.put(`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`, formularioAtualizado, {
+    headers: new HttpHeaders({})
+  }).pipe(
+    tap(response => console.log("Formulário atualizado com sucesso:", response)), // Exibe a resposta no console
+    catchError(error => {
+      console.error("Erro ao atualizar o formulário:", error);
+      return throwError(error);
     })
-  });
+  );
+}
+  criarStatus(descricao_status: any): Observable<any> {
+    console.log("Chamando o post para:", `${this.apiUrlPostStatus}/${descricao_status.descricao}`);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(this.apiUrlPostStatus, descricao_status, {headers});
+  };
+  obterStatus(): Observable<any> {
+    return this.http.get(this.apiUrlGetStatus);
   }
 }

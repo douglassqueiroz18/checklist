@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CriarFormularioService } from '../../criar-formulario.service';
 import { MatCardHeader, MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
@@ -8,35 +8,45 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ItensService } from '../../itens.service';
 import { FormularioModalComponent } from '../formulario-modal/formulario-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-criar-formulario',
   templateUrl: './criar-formulario.component.html',
   styleUrls: ['./criar-formulario.component.css'],
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, CommonModule, MatCardModule, MatCardHeader],
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, CommonModule, MatCardModule, MatCardHeader,MatSelectModule],
 })
 export class CriarFormularioComponent implements OnInit {
   formulariosEmEdicao: any | null = null;
-  formulariosCriados: { id_formulario: number | null; nome: string;itens: string[]}[] = [];
+  formulariosCriados: { id_formulario: number | null; nome: string;itens: string[], id_status: number}[] = [];
   formulariosEditados: {  id_formulario: number | null; nome: string;itens: string[]}[] = [];
   carregando: boolean = false;
   erro: string | null = null;
   sucessoCriacao: boolean = false; // Controla a exibição da mensagem de sucesso
-  novoFormulario: { id_formulario: number | null; nome: string; itens:string[] } = { id_formulario: null, nome: '', itens: [] }; // Para o formulário atual
+  novoFormulario: { id_formulario: number | null; nome: string; itens:string[],id_status: number | null } = { id_formulario: null, nome: '', itens: [] , id_status:null }; // Para o formulário atual
   modalAberto: boolean = false;
   itens: any[] = [];
   nome:string= '';
   dadosOriginais: any[] = [];
+  descricao_status: any[]=[];
+  selectedStatus: string = ''; // Armazena a opção selecionada
+  selectedOption: string = ''; // Define a propriedade para armazenar a opção selecionada
   descricao = '';  // A descrição será enviada para o backend
   itemEmEdicao: any | null = null; // Armazena o item que está sendo editado
+  novaOpcaoStatusSelecionada: string = ''; // Para armazenar a opção selecionada
+  options: any[] = []; // Armazena as opções do select
+
   constructor(
     private criarFormularioService: CriarFormularioService,
     private cdRef: ChangeDetectorRef,
     private ItensService: ItensService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
+    this.carregarStatus();
     this.carregarFormularios();
     this.carregarItens1;
   }
@@ -98,7 +108,8 @@ export class CriarFormularioComponent implements OnInit {
       this.novoFormulario = {
         id_formulario: Date.now(), // ID temporário único
         nome: '',
-        itens: [] // Começa vazio, sem buscar do backend
+        itens: [], // Começa vazio, sem buscar do backend
+        id_status: null
       };
     }// else {
       // Se já existe, então carregamos os itens
@@ -122,7 +133,7 @@ export class CriarFormularioComponent implements OnInit {
   }
   fecharModal(): void {
     this.modalAberto = false;
-    this.novoFormulario = { id_formulario: null, nome: '', itens: []}; // Limpa os dados do formulário
+    this.novoFormulario = { id_formulario: null, nome: '', itens: [], id_status: null}; // Limpa os dados do formulário
     this.itens = []; // Garante que os itens sejam limpos ao fechar o modal
   }
   carregarFormularios(): void {
@@ -136,8 +147,8 @@ export class CriarFormularioComponent implements OnInit {
           this.formulariosCriados = data.map((formularioCriado) => ({
             id_formulario: formularioCriado.id_formulario,
             nome: formularioCriado.nome,
-            itens: formularioCriado.itens || []  // Garante que 'itens' sempre exista
-
+            itens: formularioCriado.itens || [],  // Garante que 'itens' sempre exista
+            id_status: formularioCriado.id_status
           }));
         } else{
           this.formulariosCriados = [];  // Retorna uma lista vazia se data for null ou não for um array
@@ -168,12 +179,13 @@ export class CriarFormularioComponent implements OnInit {
         this.formulariosCriados.push({
           id_formulario: response.id_formulario,
           nome: response.nome,
-          itens: response.itens || [] // Garante que itens seja um array vazio, se estiver ausente
+          itens: response.itens || [], // Garante que itens seja um array vazio, se estiver ausente
+          id_status: response.id_status
 
         });
 
         // Reseta os valores para o próximo formulário
-        this.novoFormulario = { id_formulario: null, nome: '', itens: []};
+        this.novoFormulario = { id_formulario: null, nome: '', itens: [], id_status: null };
         this.sucessoCriacao = true;
 
         // Remove a mensagem de sucesso após alguns segundos
@@ -200,11 +212,12 @@ export class CriarFormularioComponent implements OnInit {
     const body = {
       item: this.descricao,
       formulario: this.novoFormulario.nome,
-      id_formulario: this.novoFormulario.id_formulario
+      id_formulario: this.novoFormulario.id_formulario,
+      id_status: this.novaOpcaoStatusSelecionada
     };
-    this.ItensService.enviarItem(body, this.novoFormulario.nome, this.novoFormulario.id_formulario).subscribe(
+    this.ItensService.enviarItem(body, this.novoFormulario.nome, this.novoFormulario.id_formulario, this.novoFormulario.id_status).subscribe(
       (response: any) => {
-        const novoItem = { item: response.id_formulario, descricao: response.descricao, formulario: response.formulario, id_formulario: response.id_formulario };  // Supondo que o 'response' tenha a estrutura correta
+        const novoItem = { item: response.id_formulario, descricao: response.descricao, formulario: response.formulario, id_formulario: response.id_formulario, id_status: response.id_status };  // Supondo que o 'response' tenha a estrutura correta
         this.itens.push(novoItem);
   
         // Agora limpa o campo 'descricao' após a requisição ser bem-sucedida
@@ -235,7 +248,7 @@ export class CriarFormularioComponent implements OnInit {
 
       // Passa o id_formulario ao salvar os itens
       this.novoFormulario.itens.forEach(item => {
-        this.ItensService.enviarItem(item, this.novoFormulario, idFormularioSalvo).subscribe(
+        this.ItensService.enviarItem(item, this.novoFormulario, idFormularioSalvo, this.novoFormulario.id_status).subscribe(
           (itemResponse) => {
             console.log('Item salvo:', itemResponse);
             // Aqui você pode adicionar o item salvo na lista ou realizar outra ação
@@ -280,4 +293,44 @@ export class CriarFormularioComponent implements OnInit {
       }
     );
   }
+  carregarStatus() {
+    this.criarFormularioService.obterStatus().subscribe(
+      (data: any[]) => {
+        console.log('Dados recebidos da API de status:', data);
+        this.ngZone.run(() => {
+          this.options = data.map(item => ({
+            value: item.id_status ?? null,  // Evita valores undefined
+            label: item.descricao_status ?? 'Sem descrição'
+          }));
+          this.cdRef.detectChanges();
+        });
+      },
+      (error: any) => {
+        console.error('Erro ao obter status no formulario-modal.component.ts:', error);
+      }
+    );
+  }
+  criarStatus(){
+    if (!this.descricao_status) {
+      console.error('A descricao do status não pode ser vazia.');
+      return;
+    }
+    const body = {
+      descricao_status: this.descricao_status
+    };
+    this.criarFormularioService.criarStatus(body).subscribe({
+      next: (response) => {
+        console.log('Status criado com sucesso:', response);
+      },
+      error: (error) => {
+        console.error('Erro ao criar status:', error);
+      }
+    });
+  };
+  onOptionSelected(event: any) {
+    this.novaOpcaoStatusSelecionada = event.value;
+    this.cdr.detectChanges(); // Força atualização da interface
+    console.log('Opção realmente salva:', this.novaOpcaoStatusSelecionada);  
+  }
+
 }
