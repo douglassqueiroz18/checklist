@@ -18,7 +18,6 @@ export class CriarFormularioService {
   obterFormulariosCriados(): Observable<any> {
     return this.http.get(this.apiUrlGetFormulariosCriados);
   }
-  
   enviarFormulariosCriados(formulariosCriados: any): Observable<any> {
     console.log('Chamando Post no criar-formulario.service.ts para', this.apiUrlPostFormulariosCriados, 'com dados:', formulariosCriados);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -34,12 +33,15 @@ export class CriarFormularioService {
   }
   atualizarFormulario(formulario: any): Observable<any> {
     console.log("Chamando Put para:",`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`,'com dados', formulario);
-  
   const formularioAtualizado = {
     id_formulario: formulario.id_formulario,
     nome: formulario.nome,
-    status: formulario.status
+    status: formulario.status,
+    id_status: formulario.id_status,
+    id: formulario.id
   };
+  console.log('Dados que serão passados no put', formularioAtualizado);
+
   return this.http.put(`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`, formularioAtualizado, {
     headers: new HttpHeaders({})
   }).pipe(
@@ -50,10 +52,10 @@ export class CriarFormularioService {
     })
   );
 }
-  criarStatus(descricao_status: any): Observable<any> {
-    console.log("Chamando o post para:", `${this.apiUrlPostStatus}/${descricao_status.descricao}`);
+  criarStatus(id_status: any): Observable<any> {
+    console.log("Chamando o post para:", this.apiUrlPostStatus, id_status.id_status); // Corrigido o console.log
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post(this.apiUrlPostStatus, descricao_status, {headers});
+    return this.http.post(this.apiUrlPostStatus, id_status, {headers});
   };
   obterStatus(): Observable<any> {
     return this.http.get(this.apiUrlGetStatus);

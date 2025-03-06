@@ -21,7 +21,6 @@
         id_formulario: id_formulario,
         id_status: item.id_status
       };
-      console.log('Chamando POST para para itens.service:', this.apiUrlPostItens, 'com id_status:', body);  // Adiciona esse log
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
       return this.http.post(this.apiUrlPostItens, body, { headers });
     }

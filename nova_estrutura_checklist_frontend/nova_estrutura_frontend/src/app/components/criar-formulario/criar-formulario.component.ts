@@ -2,19 +2,21 @@ import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CriarFormularioService } from '../../criar-formulario.service';
 import { MatCardHeader, MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ItensService } from '../../itens.service';
 import { FormularioModalComponent } from '../formulario-modal/formulario-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-criar-formulario',
   templateUrl: './criar-formulario.component.html',
   styleUrls: ['./criar-formulario.component.css'],
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, CommonModule, MatCardModule, MatCardHeader,MatSelectModule],
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, CommonModule, MatCardModule, MatCardHeader,MatSelectModule, MatIconModule, ReactiveFormsModule],
 })
 export class CriarFormularioComponent implements OnInit {
   formulariosEmEdicao: any | null = null;
@@ -23,7 +25,7 @@ export class CriarFormularioComponent implements OnInit {
   carregando: boolean = false;
   erro: string | null = null;
   sucessoCriacao: boolean = false; // Controla a exibição da mensagem de sucesso
-  novoFormulario: { id_formulario: number | null; nome: string; itens:string[],id_status: number | null } = { id_formulario: null, nome: '', itens: [] , id_status:null }; // Para o formulário atual
+  novoFormulario: { id_formulario: number | null; nome: string; itens:string[],id_status: number | null } = { id_formulario: null, nome: '', itens: [], id_status:null }; // Para o formulário atual
   modalAberto: boolean = false;
   itens: any[] = [];
   nome:string= '';
@@ -35,6 +37,9 @@ export class CriarFormularioComponent implements OnInit {
   itemEmEdicao: any | null = null; // Armazena o item que está sendo editado
   novaOpcaoStatusSelecionada: string = ''; // Para armazenar a opção selecionada
   options: any[] = []; // Armazena as opções do select
+  statusForm: FormGroup;
+  mostrarCampoNovoStatus: boolean = false; // Inicialmente escondido
+  novoStatus: any;
 
   constructor(
     private criarFormularioService: CriarFormularioService,
@@ -42,8 +47,13 @@ export class CriarFormularioComponent implements OnInit {
     private ItensService: ItensService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
-  ) {}
+    private ngZone: NgZone,
+    private fb: FormBuilder
+  ) {
+    this.statusForm = this.fb.group({
+      descricao_status: ['', Validators.required],
+    });
+  }
 
   ngOnInit(): void {
     this.carregarStatus();
@@ -51,6 +61,7 @@ export class CriarFormularioComponent implements OnInit {
     this.carregarItens1;
   }
   carregarItens() {
+    console.log('carregando items');
     this.ItensService.obterItens().subscribe(
       (data: any[]) => {
         this.dadosOriginais = data;  // Armazena o "data" completo
@@ -99,7 +110,10 @@ export class CriarFormularioComponent implements OnInit {
       (error: any) => {
         console.error('Erro ao obter itens:', error);
       }
-    );
+    )
+  }
+  abrirNovoStatus() {
+    this.mostrarCampoNovoStatus = true; // Exibe o campo ao clicar
   }
   abrirModal(): void {
     this.modalAberto = true;
@@ -110,32 +124,10 @@ export class CriarFormularioComponent implements OnInit {
         nome: '',
         itens: [], // Começa vazio, sem buscar do backend
         id_status: null
-      };
-    }// else {
-      // Se já existe, então carregamos os itens
-    //  this.carregarItens();
-    //}
+      }
+    }
   }
 
-  abrirModalFormulario(formulario?: any): void {
-    const dialogRef = this.dialog.open(FormularioModalComponent,{
-      width: '600px',
-      data: {
-        formulario: formulario // Passa o título do formulário
-      }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result){
-        console.log('Formulario salvo:', result);
-        this.carregarFormularios();
-      }
-    });
-  }
-  fecharModal(): void {
-    this.modalAberto = false;
-    this.novoFormulario = { id_formulario: null, nome: '', itens: [], id_status: null}; // Limpa os dados do formulário
-    this.itens = []; // Garante que os itens sejam limpos ao fechar o modal
-  }
   carregarFormularios(): void {
     this.carregando = true;
     this.erro = null;
@@ -152,7 +144,6 @@ export class CriarFormularioComponent implements OnInit {
           }));
         } else{
           this.formulariosCriados = [];  // Retorna uma lista vazia se data for null ou não for um array
-
         }
         this.cdRef.detectChanges();
       },
@@ -160,18 +151,27 @@ export class CriarFormularioComponent implements OnInit {
         this.carregando = false;
         this.erro = 'Erro ao carregar os formulários. Por favor, tente novamente.';
       }
-    );
+    )
   }
+  fecharModal(): void {
+    this.modalAberto = false;
+    this.novoFormulario = { id_formulario: null, nome: '', itens: [], id_status: null}; // Limpa os dados do formulário
+    this.itens = []; // Garante que os itens sejam limpos ao fechar o modal
+  }
+  
 
   recarregar(): void {
     this.carregarFormularios();
   }
 
   criarFormulario(): void {
+    console.log('testando criar formulario');
     if (!this.novoFormulario.nome.trim()) {
       this.erro = 'O nome do formulário não pode estar vazio.';
       return;
     }
+    const idStatusSelecionado = this.novaOpcaoStatusSelecionada || this.novoStatus?.id_status
+
     this.criarFormularioService.enviarFormulariosCriados(this.novoFormulario).subscribe(
       (response: any) => {
 
@@ -180,26 +180,85 @@ export class CriarFormularioComponent implements OnInit {
           id_formulario: response.id_formulario,
           nome: response.nome,
           itens: response.itens || [], // Garante que itens seja um array vazio, se estiver ausente
-          id_status: response.id_status
-
+          id_status: idStatusSelecionado || response.id_status
         });
-
         // Reseta os valores para o próximo formulário
         this.novoFormulario = { id_formulario: null, nome: '', itens: [], id_status: null };
+        location.reload();
+
         this.sucessoCriacao = true;
+        window.location.reload();
+
+        console.log('teste dos dados do fomrulariosCriados', this.novoFormulario);
 
         // Remove a mensagem de sucesso após alguns segundos
         setTimeout(() => {
-          window.location.reload();
-          this.sucessoCriacao = false;
+          location.reload();
+          this.sucessoCriacao = true;
         }, 3000);
+        
       },
       (error: any) => {
         console.error('Erro ao criar o formulário:', error);
         this.erro = 'Erro ao criar o formulário. Por favor, tente novamente.';
       }
-    ); 
+    ) 
   }
+  salvarFormulario(): void {
+    console.log('chamando o salvar formulario');
+    this.novoFormulario.id_status = this.novoFormulario.id_status || this.novaOpcaoStatusSelecionada || this.novoStatus?.id_status;
+
+    console.log('Dados do novo formulário antes de enviar:', this.novoFormulario);
+
+    if (!this.novoFormulario.nome.trim()) {
+      this.novoFormulario.id_formulario = Date.now(); // Gera o ID temporário
+      this.erro = 'O nome do formulário não pode estar vazio.';
+      return; // Não envia o formulário se o nome estiver vazio
+    }
+    this.criarFormularioService.enviarFormulariosCriados(this.novoFormulario).subscribe(
+      (response) => {
+      // Agora, você tem o id_formulario da resposta
+      const idFormularioSalvo = this.novoFormulario;  // Supondo que o ID venha na resposta
+      // Passa o id_formulario ao salvar os itens
+      const idStatus = this.novoFormulario.id_status; // Armazena o id_status antes de resetar
+      this.novoFormulario.itens.forEach(item => {
+        this.ItensService.enviarItem(item, this.novoFormulario, idFormularioSalvo, idStatus).subscribe(
+          
+          (itemResponse) => {
+            console.log('Item salvo:', itemResponse);
+            // Aqui você pode adicionar o item salvo na lista ou realizar outra ação
+          },
+          (error) => {
+            console.error('Erro ao salvar item:', error);
+          }
+        );
+      })
+        this.formulariosCriados.push(response);
+        this.fecharModal();
+        console.log('testando o console');
+
+      },
+      (error) => {
+        console.error('Erro ao salvar formulário:', error);
+      }
+    )
+  }
+ 
+  abrirModalFormulario(formulario?: any): void {
+    const dialogRef = this.dialog.open(FormularioModalComponent,{
+      width: '600px',
+      data: {
+        formulario: formulario // Passa o título do formulário
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        console.log('Formulario salvo:', result);
+        this.carregarFormularios();
+      }
+    });
+  }
+  
   criarItem() {
     if (!this.descricao.trim()) {
       console.error('A descrição do item não pode estar vazia.');
@@ -209,12 +268,15 @@ export class CriarFormularioComponent implements OnInit {
       console.error('Erro: ID do formulário não está definido.');
       return;
     }
+    const idStatusSelecionado = this.novaOpcaoStatusSelecionada || this.novoStatus?.id_status
+
     const body = {
       item: this.descricao,
       formulario: this.novoFormulario.nome,
       id_formulario: this.novoFormulario.id_formulario,
-      id_status: this.novaOpcaoStatusSelecionada
+      id_status: idStatusSelecionado
     };
+    console.log('Testando o item que está sendo criado',body);
     this.ItensService.enviarItem(body, this.novoFormulario.nome, this.novoFormulario.id_formulario, this.novoFormulario.id_status).subscribe(
       (response: any) => {
         const novoItem = { item: response.id_formulario, descricao: response.descricao, formulario: response.formulario, id_formulario: response.id_formulario, id_status: response.id_status };  // Supondo que o 'response' tenha a estrutura correta
@@ -233,40 +295,7 @@ export class CriarFormularioComponent implements OnInit {
       }
     );
   }
-  salvarFormulario(): void {
-    if (!this.novoFormulario.nome.trim()) {
-      this.novoFormulario.id_formulario = Date.now(); // Gera o ID temporário
-      this.erro = 'O nome do formulário não pode estar vazio.';
-      return; // Não envia o formulário se o nome estiver vazio
-    }
-    
-    this.criarFormularioService.enviarFormulariosCriados(this.novoFormulario).subscribe(
-      (response) => {
-        
-         // Agora, você tem o id_formulario da resposta
-      const idFormularioSalvo = this.novoFormulario;  // Supondo que o ID venha na resposta
-
-      // Passa o id_formulario ao salvar os itens
-      this.novoFormulario.itens.forEach(item => {
-        this.ItensService.enviarItem(item, this.novoFormulario, idFormularioSalvo, this.novoFormulario.id_status).subscribe(
-          (itemResponse) => {
-            console.log('Item salvo:', itemResponse);
-            // Aqui você pode adicionar o item salvo na lista ou realizar outra ação
-          },
-          (error) => {
-            console.error('Erro ao salvar item:', error);
-          }
-        );
-      });
-        this.formulariosCriados.push(response);
-        this.fecharModal();
-      },
-      (error) => {
-        console.error('Erro ao salvar formulário:', error);
-      }
-    );
-  }
- 
+  
   deletarFormulariosCriados(formularioId: number | null): void {
     if (formularioId === null) {
       console.error('ID do formulário não pode ser nulo');
@@ -296,7 +325,6 @@ export class CriarFormularioComponent implements OnInit {
   carregarStatus() {
     this.criarFormularioService.obterStatus().subscribe(
       (data: any[]) => {
-        console.log('Dados recebidos da API de status:', data);
         this.ngZone.run(() => {
           this.options = data.map(item => ({
             value: item.id_status ?? null,  // Evita valores undefined
@@ -310,25 +338,35 @@ export class CriarFormularioComponent implements OnInit {
       }
     );
   }
-  criarStatus(){
-    if (!this.descricao_status) {
-      console.error('A descricao do status não pode ser vazia.');
+  criarStatus() {
+    if (this.statusForm.invalid) {
+      console.error('A descrição do status não pode ser vazia.');
       return;
     }
-    const body = {
-      descricao_status: this.descricao_status
+    const novoStatus = {
+      id_status: Date.now(), // Usa o timestamp atual como ID único temporário
+      descricao_status: this.statusForm.value.descricao_status
     };
-    this.criarFormularioService.criarStatus(body).subscribe({
+  
+    this.criarFormularioService.criarStatus(novoStatus).subscribe({
       next: (response) => {
         console.log('Status criado com sucesso:', response);
+        this.statusForm.reset(); // Limpa o formulário após salvar
+              // Atualiza `this.novoStatus` com o ID real retornado pelo backend
+        this.novoStatus = {
+          id_status: response.id_status, // Usa o ID correto do backend
+          descricao_status: response.descricao_status
+        };
+
       },
       error: (error) => {
         console.error('Erro ao criar status:', error);
       }
     });
-  };
+  }
   onOptionSelected(event: any) {
     this.novaOpcaoStatusSelecionada = event.value;
+    this.novoFormulario.id_status = event.value; // Atualiza o id_status diretamente no objeto correto
     this.cdr.detectChanges(); // Força atualização da interface
     console.log('Opção realmente salva:', this.novaOpcaoStatusSelecionada);  
   }

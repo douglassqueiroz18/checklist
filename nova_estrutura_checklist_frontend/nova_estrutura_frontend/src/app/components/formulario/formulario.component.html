@@ -1,30 +1,30 @@
 
 
 <div class="form-group">
-  <label for="setor">Setor:</label>
-  <select id="setor" [(ngModel)]="setores">
-    <option value="todos">Todos os setores</option>
-    <option *ngFor="let setor of setores" [value]="setor.descricao">{{ setor.descricao }}</option>
-  </select>
-</div>
-<div class="form-group">
-  <label for="usuario">Usuarios:</label>
-  <select id="usuario" [(ngModel)]="usuario">
-    <option value="todos">Todos os usuários</option>
-    <option *ngFor="let usuario of usuarios" [value]="usuario.id">{{ usuario.name }}</option>
-  </select>
-</div>
-<div class="form-group">
-  <ul *ngIf="!carregando && !erro && formulariosCriados.length > 0" class="form-list">
-    <li *ngFor="let formulario of formulariosCriados">
+    <label for="setor">Setor:</label>
+    <select id="setor" [(ngModel)]="setores">
+      <option value="todos">Todos os setores</option>
+      <option *ngFor="let setor of setores" [value]="setor.descricao">{{ setor.descricao }}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="usuario">Usuarios:</label>
+    <select id="usuario" [(ngModel)]="usuario">
+      <option value="todos">Todos os usuários</option>
+      <option *ngFor="let usuario of usuarios" [value]="usuario.id">{{ usuario.name }}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <ul *ngIf="!carregando && !erro && formulariosCriados.length > 0" class="form-list">
+      <li *ngFor="let formulario of formulariosCriados">
+        {{ formulario.nome }}
+      </li>
+    </ul>
+  </div>
+  
+  <mat-grid-list cols="2" rowHeight="auto" gutterSize="16px">
+    <mat-list-option *ngFor="let formulario of formulariosCriados" [value]="formulario.id_formulario">
       {{ formulario.nome }}
-    </li>
-  </ul>
-</div>
-
-<mat-grid-list cols="2" rowHeight="auto" gutterSize="16px">
-  <mat-list-option *ngFor="let formulario of formulariosCriados" [value]="formulario.id_formulario">
-    {{ formulario.nome }}
-  </mat-list-option>
-</mat-grid-list>
-
+    </mat-list-option>
+  </mat-grid-list>
+  

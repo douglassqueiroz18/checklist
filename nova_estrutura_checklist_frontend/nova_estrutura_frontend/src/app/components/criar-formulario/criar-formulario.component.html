@@ -13,7 +13,7 @@
         <button (click)="recarregar()">Tentar novamente</button>
       </div>
       <!-- Lista de formulários -->
-           <!---->
+      <!---->
 
       <ul *ngIf="!carregando && !erro && formulariosCriados.length > 0" class="form-list">
         <li *ngFor="let formulario of formulariosCriados">
@@ -49,23 +49,44 @@
           <mat-label>Nome do Formulário</mat-label>
           <input matInput [(ngModel)]="novoFormulario.nome" name="nome" required />
         </mat-form-field>
-  
+
         <h3>Adicionar Itens</h3>
         <mat-form-field appearance="outline">
           <mat-label>Descrição do Item</mat-label>
           <input matInput [(ngModel)]="descricao" name="descricao" />
         </mat-form-field>
-        <mat-form-field appearance="outline" class="input-item">
-          <mat-label>Selecione uma opção</mat-label>
-          <mat-select [(ngModel)]="novaOpcaoStatusSelecionada" name="novaOpcao"  (selectionChange)="onOptionSelected($event)">
+        <mat-form-field appearance="outline">
+          <mat-label>Selecione um status</mat-label>
+          <mat-select [(ngModel)]="novaOpcaoStatusSelecionada" name="novaOpcao"
+            (selectionChange)="onOptionSelected($event)">
             <mat-option *ngFor="let option of options" [value]="option.value">
               {{ option.label }}
             </mat-option>
+            <mat-option (click)="abrirNovoStatus()">
+              <mat-icon>add</mat-icon> Criar novo status
+            </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <!-- Formulário para criar novo status -->
+        <div *ngIf="mostrarCampoNovoStatus">
+          <form [formGroup]="statusForm" (ngSubmit)="criarStatus()">
+            <div class="novo-status-container">
+              <mat-form-field appearance="outline" class="novo-status-input">
+                <mat-label>Digite um novo status</mat-label>
+                <input matInput formControlName="descricao_status" />
+              </mat-form-field>
+
+              <button mat-icon-button color="primary" type="submit" matTooltip="Salvar Status">
+                <mat-icon>check</mat-icon>
+              </button>
+            </div>
+          </form>
+        </div>
+
         <button mat-raised-button color="accent" type="button" (click)="criarItem()">Adicionar Item</button>
-  
-  
+
+
         <!-- Lista de itens adicionados -->
         <ul *ngIf="itens && itens.length > 0; else noItems">
           <li *ngFor="let item of itens">{{ item.descricao }}</li>
@@ -75,7 +96,7 @@
         <ng-template #noItems>
           <p>Nenhum item encontrado.</p>
         </ng-template>
-  
+
         <div class="modal-actions">
           <button mat-raised-button color="primary" type="submit">Salvar</button>
           <button mat-button color="warn" (click)="fecharModal()">Cancelar</button>

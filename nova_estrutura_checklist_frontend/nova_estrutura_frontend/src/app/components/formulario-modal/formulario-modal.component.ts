@@ -39,7 +39,8 @@ export class FormularioModalComponent {
   selectedStatus: string = ''; // Armazena a opção selecionada
   selectedOption: string = ''; // Define a propriedade para armazenar a opção selecionada
   novaOpcaoStatusSelecionada: string = ''; // Para armazenar a opção selecionada
-
+  novoStatus: any;
+  
   options: any[] = []; // Armazena as opções do select
   @Input() modalAberto: boolean = true;
   //@Input() formulario: any = {}; // Objeto do formulário recebido
@@ -128,13 +129,19 @@ carregarItens() {
 
   editarFormularioModal(formularioAtualizar: any) {
     const id_a_ser_editado = this.formulario.id_formulario;
+    
+    console.log('duvida nos dados que estão indo', this.dadosOriginais[0]?.id);
+    const id = this.dadosOriginais[0]?.id;
     const primeiroItem = this.formularioTeste.length > 0 ? this.formularioTeste[0] : null;
-
+    const idStatusSelecionado = primeiroItem ? primeiroItem.id_status : null;
+    console.log('Futuro Status',idStatusSelecionado);
+    console.log("testando a const id", id);
     const formularioParaAtualizar = {
       id_formulario: this.formulario.id_formulario, 
       nome: this.formulario.nome, 
       status: this.formulario.status,
-      id_status: primeiroItem ? primeiroItem.id_status : null  // Evita erro de acesso a array vazio
+      id_status: idStatusSelecionado,
+      id: id
     };
   
     this.CriarFormularioService.atualizarFormulario(formularioParaAtualizar).subscribe(
@@ -142,7 +149,7 @@ carregarItens() {
         console.log("Atualização concluída com sucesso:", response);
         alert("Formulário atualizado com sucesso!"); // Exibe um alerta de sucesso
         this.fecharModalFormulario(); // Fecha o modal após salvar
-        //location.reload();
+        location.reload();
       },
       (error) => {
         console.error("Erro ao atualizar formulário:", error);
@@ -169,7 +176,10 @@ carregarItens() {
 
     }
   );
+  
   }
+  // No seu componente .ts
+  
   criarItem() {
     console.log('dados que estão indo dentro do criar item variavel descricao', this.descricao);
     console.log('dados que estão indo dentro do criar item variavel formulario', this.formulario);
@@ -251,5 +261,5 @@ carregarItens() {
   onOptionSelected(event: any) {
     this.novaOpcaoStatusSelecionada = event.value;
     this.cdr.detectChanges(); // Força atualização da interface
-    console.log('Opção realmente salva:', this.novaOpcaoStatusSelecionada);  }
+}
 }

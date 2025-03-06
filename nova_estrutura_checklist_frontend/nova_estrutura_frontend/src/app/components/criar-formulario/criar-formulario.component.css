@@ -149,3 +149,21 @@ mat-label {
   padding: 10px;
   border-bottom: 1px solid #ddd; /* Linha separadora opcional */
 }
+.criar-status-label {
+  font-weight: bold;
+  color: gray;
+  padding: 6px 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.novo-status-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+
+}
+.novo-status-input {
+  flex-grow: 1;
+  min-width: 180px;
+}
