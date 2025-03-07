@@ -72,3 +72,10 @@ option:first-child {
   padding-top: 2rem;
 }
 
+.form-list li {
+  display: flex;
+  justify-content: space-between; /* Nome à esquerda, botões à direita */
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd; /* Linha separadora opcional */
+} 

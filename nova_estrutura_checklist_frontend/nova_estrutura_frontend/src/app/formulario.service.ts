@@ -15,4 +15,5 @@ export class FormularioService {
   obterUsuarios(): Observable<any> {
     return this.http.get(this.apiUrlGetUsuarios); // Corrigido para retornar usuários
   }
+  
 }

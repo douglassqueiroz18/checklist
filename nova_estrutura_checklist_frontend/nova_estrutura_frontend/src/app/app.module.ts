@@ -14,13 +14,14 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
+import { SelecionarFormularioComponent } from './components/selecionar-formulario/selecionar-formulario.component';
+import { FormularioComponent } from './components/formulario/formulario.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UsuarioComponent,
-    
-    
+    SelecionarFormularioComponent    
   ],
   imports: [
     BrowserModule,

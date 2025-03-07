@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
 
@@ -14,6 +14,7 @@ export class CriarFormularioService {
   private apiUrlUpdateFormulariosCriados = '/api/edit'
   private apiUrlPostStatus = '/api/create_status'
   private apiUrlGetStatus = '/api/status'
+  private formularioSelecionado = new BehaviorSubject<any>(null);
   constructor(private http: HttpClient) { }
   obterFormulariosCriados(): Observable<any> {
     return this.http.get(this.apiUrlGetFormulariosCriados);
@@ -59,5 +60,10 @@ export class CriarFormularioService {
   };
   obterStatus(): Observable<any> {
     return this.http.get(this.apiUrlGetStatus);
+  }
+  formularioSelecionado$ = this.formularioSelecionado.asObservable();
+
+  selecionarFormulario(formulario: any): void {
+    this.formularioSelecionado.next(formulario);
   }
 }

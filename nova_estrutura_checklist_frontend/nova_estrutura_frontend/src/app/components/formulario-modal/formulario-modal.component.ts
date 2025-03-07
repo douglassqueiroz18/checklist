@@ -262,4 +262,8 @@ carregarItens() {
     this.novaOpcaoStatusSelecionada = event.value;
     this.cdr.detectChanges(); // Força atualização da interface
 }
+onFormularioSelecionado(formulario: any): void {
+  this.CriarFormularioService.selecionarFormulario(formulario);
+  console.log('Formulário selecionado:', formulario);
+}
 }
