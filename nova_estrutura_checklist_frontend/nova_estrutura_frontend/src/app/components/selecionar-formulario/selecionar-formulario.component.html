@@ -1,8 +1,8 @@
 <div *ngFor="let formulario of formulariosCriados">
-    <button 
-      [routerLink]="['/formulario', formulario.id_formulario]" 
-      class="btn btn-primary"
-      (click)="onFormularioSelecionado(formulario)">
-      {{ formulario.nome }}
-    </button>
+  <button 
+    [routerLink]="['/formulario', formulario.id_formulario]" 
+    class="btn btn-primary"
+    (click)="onFormularioSelecionado(formulario, $event)">
+    {{ formulario.nome }}
+  </button>
 </div>

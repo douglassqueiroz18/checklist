@@ -25,6 +25,8 @@ export class SelecionarFormularioComponent {
   itens: any[] = [];
   dadosOriginais: any[] = [];
   form: FormGroup; // Adicionando a declaração de FormGroup corretamente
+  selectedFormulario: any;  // Declarando a variável selectedFormulario
+
   @Output() formularioSelecionado = new EventEmitter<any>();  // Emite o evento
 
   constructor(
@@ -86,7 +88,6 @@ export class SelecionarFormularioComponent {
           // Definindo o primeiro formulário como o formulário selecionado
           if (this.formulariosCriados.length > 0) {
             this.formulario = this.formulariosCriados[0]; // Lógica de seleção do primeiro formulário
-            this.onFormularioSelecionado(this.formulario); // Chama o método para printar
 
           }
         } else {
@@ -101,10 +102,13 @@ export class SelecionarFormularioComponent {
       }
     );
   }
-  onFormularioSelecionado(formulario: any): void {
-    this.formularioSelecionado.emit(formulario);  // Envia o formulário para o pai
-    console.log('Formulário selecionado no componente filho:', formulario);
-
+  onFormularioSelecionado(formulario: any, event: Event): void {
+    event.stopPropagation();  // Para evitar o comportamento padrão do evento
+    this.formulario = formulario;  // Atualiza o formulário selecionado
+    const formularioSelecionar = this.formulario;
+    console.log('Formulário selecionado ir para a próxima página:', formularioSelecionar);
+    this.criarFormularioService.setFormulario(formulario);  // Atualiza o serviço com o formulário selecionado
+    this.formularioService.setFormulario(formulario);
   }
   
 }

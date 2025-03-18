@@ -1,7 +1,14 @@
 
-<div class="form-group">
-    <h2>{{ formulario ? formulario.nome : 'Nenhum formulário disponível' }}</h2>
+<div class="form-group" *ngIf="carregando">
+  <h2>Carregando formulário...</h2>
 </div>
+<div class="form-group" *ngIf="!carregando && formularioSelecionar?.nome">
+  <h2>{{ formularioSelecionar.nome }}</h2>
+</div>
+<div class="form-group" *ngIf="!carregando && !formularioSelecionar?.nome">
+  <h2>Nenhum formulário disponível</h2>
+</div>
+
 <div class="form-group">
     <label for="setor">Setor:</label>
     <select id="setor" [(ngModel)]="setores">

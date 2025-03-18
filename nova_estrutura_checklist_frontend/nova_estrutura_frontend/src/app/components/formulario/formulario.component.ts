@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ItensService } from '../../itens.service';
 import { SelecionarFormularioComponent } from '../selecionar-formulario/selecionar-formulario.component';
 import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Subscription,  } from 'rxjs';
 interface Shoes {
   value: string;
   name: string;
@@ -47,9 +48,13 @@ export class FormularioComponent implements OnInit {
   formulario: any ={};
   itens: any[] = [];
   dadosOriginais: any[] = [];
+  selectedFormulario: any;
+  anomalia: any;
   @ViewChild(SelecionarFormularioComponent) selecionarFormularioComponent!: SelecionarFormularioComponent;
   formularioSelecionadoId: any;
-
+  formularioSelecionadoUnico: any;
+  formularioSelecionado = new BehaviorSubject<any>(null); // Inicializado com null
+  formularioSelecionar: any;
   constructor(
     private formularioService: FormularioService, // Injeção do serviço corretamente
     private cdRef: ChangeDetectorRef, // Para forçar atualização da interface
@@ -57,13 +62,18 @@ export class FormularioComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
     private ItensService: ItensService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+
   ) {
     this.form = new FormGroup({
       clothes: this.shoesControl,
     });
   }
   ngOnInit(): void {
+    this.carregando = true;
+    this.formularioSelecionar = this.formularioService.getFormulario();
+    console.log('Formulário selecionado em outro componente:', this.formularioSelecionar);
+    this.carregando = false;
     this.carregarStatus();
     this.carregarFormularios();
     this.carregarItens();
@@ -100,7 +110,6 @@ export class FormularioComponent implements OnInit {
     this.criarFormularioService.obterFormulariosCriados().subscribe(
       (data: any[]) => {
         this.carregando = false;
-        console.log('teste dos formularios', data);
         if (data && Array.isArray(data)) {
           this.formulariosCriados = data.map((formularioCriado) => ({
             id_formulario: formularioCriado.id_formulario,
@@ -110,6 +119,7 @@ export class FormularioComponent implements OnInit {
           
         // Definindo o primeiro formulário como o formulário selecionado
         if (this.formulariosCriados.length > 0) {
+          
           this.formulario = this.formulariosCriados[0]; // Aqui você pode ajustar para qualquer lógica de seleção
           this.carregarItens(); // Carregar os itens após carregar o formulário
         }
@@ -131,7 +141,6 @@ export class FormularioComponent implements OnInit {
     this.criarFormularioService.obterStatus().subscribe(
       (data: any[]) => {
         this.ngZone.run(() => {
-          console.log('meu teste dos status',data);
           this.options = data.map(item => ({
             value: item.id_status ?? null,  // Evita valores undefined
             label: item.descricao_status ?? 'Sem descrição'
@@ -151,9 +160,6 @@ export class FormularioComponent implements OnInit {
   }
   
   carregarItens() {
-    if (this.formulariosCriados.length > 0) {
-      console.log('Recebendo os dados dos formulariosCriados', this.formulariosCriados);
-    }
   
     // Certifique-se de que há pelo menos um formulário antes de tentar acessar
     if (this.formulariosCriados.length > 0 && this.formulariosCriados[0].id_formulario) {
@@ -162,7 +168,6 @@ export class FormularioComponent implements OnInit {
       this.ItensService.obterItensPorFormulario(this.formulariosCriados[0].id_formulario).subscribe(
         (data: any[]) => {
           // Manipulação dos dados obtidos
-          console.log('Itens carregados', data);
           this.itens = data;
           this.cdRef.detectChanges();
         },
@@ -172,12 +177,17 @@ export class FormularioComponent implements OnInit {
       );
     }
   }
+  
   onFormularioSelecionado(formulario: any): void {
     this.formulario = formulario; // Atualiza o formulário selecionado
-    console.log('Formulário selecionado:', formulario);
   }
-  ngAfterViewInit() {
-    // Agora você pode acessar o método ou propriedade do filho
-    console.log(this.selecionarFormularioComponent.formulario);  // Corrigir o nome da propriedade aqui também
+
+  setFormulario(formulario: any) {
+    this.formularioSelecionado.next(formulario);  // Atualiza o BehaviorSubject com o novo formulário
   }
+
+  getFormulario() {
+    return this.formularioSelecionado.getValue();  // Retorna o valor atual do BehaviorSubject
+  }
+
 }

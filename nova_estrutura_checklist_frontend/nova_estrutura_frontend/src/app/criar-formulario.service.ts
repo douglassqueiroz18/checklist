@@ -15,17 +15,19 @@ export class CriarFormularioService {
   private apiUrlPostStatus = '/api/create_status'
   private apiUrlGetStatus = '/api/status'
   private formularioSelecionado = new BehaviorSubject<any>(null);
+  private anomalia: any;
+  formulario$ = this.formularioSelecionado.asObservable();
+  formularioSelecionadoUnico: any;
+  
   constructor(private http: HttpClient) { }
   obterFormulariosCriados(): Observable<any> {
     return this.http.get(this.apiUrlGetFormulariosCriados);
   }
   enviarFormulariosCriados(formulariosCriados: any): Observable<any> {
-    console.log('Chamando Post no criar-formulario.service.ts para', this.apiUrlPostFormulariosCriados, 'com dados:', formulariosCriados);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(this.apiUrlPostFormulariosCriados,formulariosCriados, {headers});
   } 
   deletarFormulario(id_formulario: string): Observable<any> {
-    console.log('Chamando Delete para',`${this.apiUrlDeleteFormulariosCriados}/${id_formulario}`);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json'
@@ -33,7 +35,6 @@ export class CriarFormularioService {
     return this.http.delete(`${this.apiUrlDeleteFormulariosCriados}/${id_formulario}`, {headers});
   }
   atualizarFormulario(formulario: any): Observable<any> {
-    console.log("Chamando Put para:",`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`,'com dados', formulario);
   const formularioAtualizado = {
     id_formulario: formulario.id_formulario,
     nome: formulario.nome,
@@ -41,7 +42,6 @@ export class CriarFormularioService {
     id_status: formulario.id_status,
     id: formulario.id
   };
-  console.log('Dados que serão passados no put', formularioAtualizado);
 
   return this.http.put(`${this.apiUrlUpdateFormulariosCriados}/${formulario.id_formulario}`, formularioAtualizado, {
     headers: new HttpHeaders({})
@@ -54,7 +54,6 @@ export class CriarFormularioService {
   );
 }
   criarStatus(id_status: any): Observable<any> {
-    console.log("Chamando o post para:", this.apiUrlPostStatus, id_status.id_status); // Corrigido o console.log
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(this.apiUrlPostStatus, id_status, {headers});
   };
@@ -65,5 +64,20 @@ export class CriarFormularioService {
 
   selecionarFormulario(formulario: any): void {
     this.formularioSelecionado.next(formulario);
+  }
+  setFormulario(formulario: any) {
+    this.formularioSelecionado.next(formulario);  // Atualiza o BehaviorSubject com o novo formulário
+    //const anomalia = this.formularioSelecionado.next(formulario);
+    const anomalia = this.formularioSelecionado.getValue();
+    //console.log('teste douglas', this.formularioSelecionado.getValue());  // Obtém o valor atual
+    console.log('teste douglass', anomalia);
+  }
+  teste(){
+    console.log('teste douglass', this.anomalia);
+  }
+  getFormulario() {
+    //return this.formularioSelecionadoUnico;
+    return this.formularioSelecionado.getValue();  // Retorna o valor atual do BehaviorSubject
+
   }
 }
