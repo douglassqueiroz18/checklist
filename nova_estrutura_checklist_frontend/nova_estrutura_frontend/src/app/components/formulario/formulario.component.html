@@ -43,7 +43,7 @@
     <p *ngIf="selecionarFormulario && selecionarFormulario.length === 0">Nenhum formulário disponível.</p>
 
     <!-- Exibe os itens carregados -->
-    <div *ngIf="itensSelecionados && itensSelecionados.length > 0">
+    <div *ngIf="itensSelecionados && itensSelecionados.length > 0" class="itens-container">
       <h3>Itens do Formulário</h3>
       <ul>
         <li *ngFor="let item of itensSelecionados">
@@ -51,7 +51,7 @@
         </li>
       </ul>
     </div>
-    <p *ngIf="itensSelecionados && itensSelecionados.length === 0">Nenhum item disponível.</p>
+    <p *ngIf="itensSelecionados && itensSelecionados.length === 0" class="itens-container">Nenhum item disponível.</p>
   </mat-card>
 </div>
   

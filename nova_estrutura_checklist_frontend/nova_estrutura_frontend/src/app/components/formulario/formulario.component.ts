@@ -150,6 +150,7 @@ export class FormularioComponent implements OnInit {
             value: item.id_status ?? null,  // Evita valores undefined
             label: item.descricao_status ?? 'Sem descrição'
           }));
+          console.log('opções carregadas para os itens:',this.options);
           this.cdRef.detectChanges();
         });
       },

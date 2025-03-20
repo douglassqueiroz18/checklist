@@ -10,6 +10,7 @@ import { FormularioModalComponent } from '../formulario-modal/formulario-modal.c
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { FormularioService } from '../../formulario.service';
 
 @Component({
   selector: 'app-criar-formulario',
@@ -43,6 +44,7 @@ export class CriarFormularioComponent implements OnInit {
 
   constructor(
     private criarFormularioService: CriarFormularioService,
+    private formularioService: FormularioService,
     private cdRef: ChangeDetectorRef,
     private ItensService: ItensService,
     private dialog: MatDialog,
@@ -367,6 +369,7 @@ export class CriarFormularioComponent implements OnInit {
   onOptionSelected(event: any) {
     this.novaOpcaoStatusSelecionada = event.value;
     this.novoFormulario.id_status = event.value; // Atualiza o id_status diretamente no objeto correto
+    this.formularioService.setStatusPorItem(this.novaOpcaoStatusSelecionada);
     this.cdr.detectChanges(); // Força atualização da interface
     console.log('Opção realmente salva:', this.novaOpcaoStatusSelecionada);  
   }

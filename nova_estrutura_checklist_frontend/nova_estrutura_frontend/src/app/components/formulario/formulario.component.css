@@ -12,7 +12,7 @@
   font-family: 'Roboto', sans-serif;
   max-width: 400px;
   width: 100%;
-}
+} 
 
 label {
   font-size: 1.1rem;
@@ -20,6 +20,8 @@ label {
   display: block;
   margin-bottom: 0.6rem;
   color: #333;
+  animation: fadeIn 1s ease-out; /* Animação de entrada */
+
 }
 
 select {
@@ -32,6 +34,12 @@ select {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   outline: none;
+  appearance: none; /* Remove o estilo padrão do navegador */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23007bff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 1.2rem;
+  cursor: pointer;
 }
 
 select:focus {
@@ -79,3 +87,107 @@ option:first-child {
   padding: 10px;
   border-bottom: 1px solid #ddd; /* Linha separadora opcional */
 } 
+/* Animação de entrada suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilo do título */
+h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #007bff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 1s ease-out, pulse 2s infinite 1s;
+  font-family: 'Roboto', sans-serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  h2 {
+    font-size: 2rem;
+  }
+  .form-group {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  label {
+    font-size: 1rem;
+  }
+
+  select {
+    padding: 0.6rem;
+  }
+  .itens-container h3 {
+    font-size: 1.3rem;
+  }
+
+  .itens-container li {
+    font-size: 0.9rem;
+  }
+
+  .itens-container p {
+    font-size: 0.9rem;
+  }
+}
+.itens-container {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-out; /* Animação de entrada */
+}
+/* Título da seção */
+.itens-container h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #007bff;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Lista de itens */
+.itens-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Item da lista */
+.itens-container li {
+  padding: 0.8rem;
+  margin-bottom: 0.5rem;
+  background-color: #f7f7f7;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+  font-size: 1rem;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito ao passar o mouse sobre o item */
+.itens-container li:hover {
+  transform: translateX(5px);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mensagem quando não há itens */
+.itens-container p {
+  text-align: center;
+  font-size: 1rem;
+  color: #888;
+  font-style: italic;
+  margin: 0;
+}

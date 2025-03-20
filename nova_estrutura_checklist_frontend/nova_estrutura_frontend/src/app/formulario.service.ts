@@ -9,6 +9,7 @@ export class FormularioService {
   private apiUrlGetSetores = '/api/setores';
   private apiUrlGetUsuarios = '/api/users';
   private formularioSelecionar: any = null;
+  private novaOpcaoStatusSelecionada: any = null;
   constructor(private http: HttpClient) { }
   obterSetores(): Observable<any> {
     return this.http.get(this.apiUrlGetSetores);
@@ -26,4 +27,12 @@ export class FormularioService {
     return this.formularioSelecionar;
   }
 
+  getStatusPorItem(): any {
+    return this.novaOpcaoStatusSelecionada;
+  }
+
+  setStatusPorItem(status: any): any {
+    this.novaOpcaoStatusSelecionada = status;
+    console.log('vendo as opções selecionadas o formulario.service: ',this.novaOpcaoStatusSelecionada);
+  }
 }

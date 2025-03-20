@@ -1,0 +1,63 @@
+/* Container principal */
+.formularios-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; /* Espaçamento entre os botões */
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  /* Estilo base do botão */
+  .formulario-btn {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #007bff, #00bfff); /* Gradiente azul */
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Efeito de hover */
+  .formulario-btn:hover {
+    transform: translateY(-5px); /* Levanta o botão */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #00bfff, #007bff); /* Inverte o gradiente */
+  }
+  
+  /* Efeito de clique */
+  .formulario-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Efeito de brilho ao passar o mouse */
+  .formulario-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease;
+  }
+  
+  .formulario-btn:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .formulario-btn {
+      width: 100%; /* Botões ocupam a largura total em telas pequenas */
+      font-size: 1rem;
+      padding: 0.8rem 1.5rem;
+    }
+  }
