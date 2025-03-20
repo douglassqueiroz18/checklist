@@ -17,13 +17,12 @@ export class FormularioService {
     return this.http.get(this.apiUrlGetUsuarios); // Corrigido para retornar usuários
   }
   
-  setFormulario(formulario: any): void {
+  setTitulo(formulario: any): void {
     this.formularioSelecionar = formulario;
-    console.log('Formulário selecionado no serviço:', this.formularioSelecionar);
   }
 
   // Método para obter o formulário selecionado
-  getFormulario(): any {
+  getTitulo(): any {
     return this.formularioSelecionar;
   }
 

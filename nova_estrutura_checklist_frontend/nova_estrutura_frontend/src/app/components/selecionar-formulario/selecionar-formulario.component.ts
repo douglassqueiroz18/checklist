@@ -84,7 +84,7 @@ export class SelecionarFormularioComponent {
             nome: formularioCriado.nome,
             itens: formularioCriado.itens || [],
           }));
-
+          console.log('teste para ver formularios',this.formulariosCriados);
           // Definindo o primeiro formulário como o formulário selecionado
           if (this.formulariosCriados.length > 0) {
             this.formulario = this.formulariosCriados[0]; // Lógica de seleção do primeiro formulário
@@ -106,9 +106,8 @@ export class SelecionarFormularioComponent {
     event.stopPropagation();  // Para evitar o comportamento padrão do evento
     this.formulario = formulario;  // Atualiza o formulário selecionado
     const formularioSelecionar = this.formulario;
-    console.log('Formulário selecionado ir para a próxima página:', formularioSelecionar);
     this.criarFormularioService.setFormulario(formulario);  // Atualiza o serviço com o formulário selecionado
-    this.formularioService.setFormulario(formulario);
+    this.formularioService.setTitulo(formulario);
   }
   
 }

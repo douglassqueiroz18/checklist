@@ -37,6 +37,8 @@ export class FormularioComponent implements OnInit {
   ];
   shoesControl = new FormControl();
   setores: any[] = []; // Lista para armazenar os setores
+  itensSelecionados: any[] = []; // Declara itensSelecionados como propriedade do componente
+
   usuarios: any[] = []; // Lista para usuarios
   usuario: any;         // Variável para o usuário selecionado
   carregando: boolean = false;
@@ -50,6 +52,7 @@ export class FormularioComponent implements OnInit {
   dadosOriginais: any[] = [];
   selectedFormulario: any;
   anomalia: any;
+  selecionarFormulario: any;
   @ViewChild(SelecionarFormularioComponent) selecionarFormularioComponent!: SelecionarFormularioComponent;
   formularioSelecionadoId: any;
   formularioSelecionadoUnico: any;
@@ -59,6 +62,7 @@ export class FormularioComponent implements OnInit {
     private formularioService: FormularioService, // Injeção do serviço corretamente
     private cdRef: ChangeDetectorRef, // Para forçar atualização da interface
     private criarFormularioService: CriarFormularioService,
+    private itensService: ItensService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
     private ItensService: ItensService,
@@ -70,9 +74,10 @@ export class FormularioComponent implements OnInit {
     });
   }
   ngOnInit(): void {
+    this.carregarItensFormularios();
     this.carregando = true;
-    this.formularioSelecionar = this.formularioService.getFormulario();
-    console.log('Formulário selecionado em outro componente:', this.formularioSelecionar);
+    this.formularioSelecionar = this.formularioService.getTitulo();
+    this.mostrarFormulario();
     this.carregando = false;
     this.carregarStatus();
     this.carregarFormularios();
@@ -156,11 +161,9 @@ export class FormularioComponent implements OnInit {
   onOptionSelected(event: any) {
     this.novaOpcaoStatusSelecionada = event.value;
     this.cdr.detectChanges(); // Força atualização da interface
-    console.log('Opção realmente salva:', this.novaOpcaoStatusSelecionada);  
   }
   
   carregarItens() {
-  
     // Certifique-se de que há pelo menos um formulário antes de tentar acessar
     if (this.formulariosCriados.length > 0 && this.formulariosCriados[0].id_formulario) {
       this.itens = [];
@@ -188,6 +191,30 @@ export class FormularioComponent implements OnInit {
 
   getFormulario() {
     return this.formularioSelecionado.getValue();  // Retorna o valor atual do BehaviorSubject
+    
   }
+  mostrarFormulario(){
+    this.formularioSelecionar = this.formularioService.getTitulo();
+    console.log("Mostrar Formulario", this.formularioSelecionar);
+  }
+  carregarItensFormularios() {
+    const formularioSelecionar = this.formularioService.getTitulo();
+    console.log('Formulário selecionado:', formularioSelecionar); // Verifique o valor aqui
 
+    if (formularioSelecionar && formularioSelecionar.id_formulario) {
+      this.itensService.obterItensPorFormulario(formularioSelecionar.id_formulario).subscribe(
+        (data: any[]) => {
+          this.itensSelecionados = data; // Atualiza a lista de itens
+          console.log('testando os itens do formulairo', this.itensSelecionados);
+          this.cdRef.detectChanges(); // Força a atualização da UI
+          console.log('teste douglas',data);
+        },
+        (error: any) => {
+          console.error('Erro ao carregar itens:', error);
+        }
+      );
+    } else {
+      console.error('Formulário selecionado inválido ou sem ID.');
+    }
+  }
 }

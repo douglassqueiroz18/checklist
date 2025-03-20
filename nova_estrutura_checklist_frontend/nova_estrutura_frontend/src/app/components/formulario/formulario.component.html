@@ -24,23 +24,36 @@
     </select>
 </div>
 <div class="form-group">
-    <mat-card class="form-card">
-      <!-- Iterando corretamente apenas uma vez -->
-      <ul *ngIf="formularioTeste && formularioTeste.length > 0" class="form-list">
-        <li *ngFor="let item of formularioTeste">
-          {{ item.descricao }}
-          <mat-form-field>
-            <mat-label>Opções</mat-label>
-            <mat-select [(ngModel)]="novaOpcaoStatusSelecionada">
-              <mat-option *ngFor="let option of options" [value]="option.value">
-                {{ option.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+  <mat-card class="form-card">
+    <!-- Verifica se há formulários selecionados -->
+    <ul *ngIf="selecionarFormulario && selecionarFormulario.length > 0" class="form-list">
+      <!-- Itera sobre a lista de formulários selecionados -->
+      <li *ngFor="let formulario of selecionarFormulario">
+        {{ formulario.nome }} <!-- Exibe o nome do formulário -->
+        <mat-form-field>
+          <mat-label>Opções</mat-label>
+          <mat-select [(ngModel)]="novaOpcaoStatusSelecionada">
+            <mat-option *ngFor="let option of options" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+    </ul>
+    <p *ngIf="selecionarFormulario && selecionarFormulario.length === 0">Nenhum formulário disponível.</p>
+
+    <!-- Exibe os itens carregados -->
+    <div *ngIf="itensSelecionados && itensSelecionados.length > 0">
+      <h3>Itens do Formulário</h3>
+      <ul>
+        <li *ngFor="let item of itensSelecionados">
+          {{ item.item }} <!-- Exibe o nome do item (propriedade 'item' do objeto) -->
         </li>
       </ul>
-    </mat-card>
-  </div>
+    </div>
+    <p *ngIf="itensSelecionados && itensSelecionados.length === 0">Nenhum item disponível.</p>
+  </mat-card>
+</div>
   
 
  

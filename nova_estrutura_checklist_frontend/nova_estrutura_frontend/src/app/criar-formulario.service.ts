@@ -70,10 +70,8 @@ export class CriarFormularioService {
     //const anomalia = this.formularioSelecionado.next(formulario);
     const anomalia = this.formularioSelecionado.getValue();
     //console.log('teste douglas', this.formularioSelecionado.getValue());  // Obtém o valor atual
-    console.log('teste douglass', anomalia);
   }
   teste(){
-    console.log('teste douglass', this.anomalia);
   }
   getFormulario() {
     //return this.formularioSelecionadoUnico;
