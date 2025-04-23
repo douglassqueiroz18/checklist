@@ -11,6 +11,7 @@
     private apiUrlDeleteItens = '/api/itens/delete'; // URL do backend para deletar itens
     private apiUrlUpdateItens = '/api/itens/update'; // URL do backend para atualizar itens
     private apiUrlGetItensporId = '/api/itens';
+    private apiUrlPostStatus = '/api/create_status'
     constructor(private http: HttpClient) {}
 
     // Método para enviar um novo item ao backend
@@ -48,12 +49,13 @@ deletarItensPorFormulario(formularioId: number): Observable<any> {
   return this.http.delete(`/api/itens/delete/${formularioId}`);
 }
 atualizarItem(item: any): Observable<any> {
-  console.log('Chamando PUT para:', `${this.apiUrlUpdateItens}/${item.id}`, 'com dados:', item.item);
+  console.log('Chamando PUT para:', `${this.apiUrlUpdateItens}/${item.id}`, 'com dados:', item.item, 'com id_status:', item.selectedOption);
   console.log('Conteúdo do item:', item);
     // Ajustar para enviar o campo correto para o backend
   const itemAtualizado = {
     id: item.id,
-    item: item.item  // Envia a chave 'item' esperada pelo backend
+    item: item.item,  // Envia a chave 'item' esperada pelo backend
+    id_status: item.selectedOption
   };
   console.log("conteudo que será utilizado para atualizar",itemAtualizado);
   return this.http.put(`${this.apiUrlUpdateItens}/${item.id}`, itemAtualizado, {
@@ -78,4 +80,8 @@ obterItemPorId(item: any): Observable<any>{
   const url = `${this.apiUrlGetItensporId}/${item.id}`; // Formata a URL corretamente
   return this.http.get(url);
 }
+criarStatus(id_status: any): Observable<any> {
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  return this.http.post(this.apiUrlPostStatus, id_status, {headers});
+};
 }

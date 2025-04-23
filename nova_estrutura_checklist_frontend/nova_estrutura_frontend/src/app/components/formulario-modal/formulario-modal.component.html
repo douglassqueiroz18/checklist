@@ -8,30 +8,48 @@
         </mat-form-field>
       </h2>
 
-      <div *ngIf="formularioTeste && formularioTeste.length > 0">
-        <div *ngFor="let item of formularioTeste" class="item-container">
-          <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Item</mat-label>
-            <input matInput [(ngModel)]="item.descricao" name="descricao-{{ item.id }}">
-          </mat-form-field>
-          
-          <mat-form-field appearance="outline">
-            <mat-label>Selecione uma opção</mat-label>
-            <mat-select [(ngModel)]="item.id_status" name="opcao-{{ item.id_status }}">
-              <mat-option *ngFor="let option of options" [value]="option.value">
-                {{ option.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <!-- Botão para logar o item no console -->
-
-          <!-- Botão de deletar ao lado do campo -->
-          <button mat-raised-button color="warn" (click)="deletarItem(item.id)" class="delete-button">
-            Deletar Item
-          </button>
+      <div *ngFor="let item of formularioTeste" class="item-container">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Item</mat-label>
+          <input matInput [(ngModel)]="item.descricao" name="descricao-{{ item.id }}">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="mat-select-field">
+          <mat-label>Selecione uma opção</mat-label>
+          <mat-select [(ngModel)]="item.id_status" name="opcao-{{ item.id_status }}">
+            <mat-option *ngFor="let option of options" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+            <mat-option (click)="abrirNovoStatus()">
+              Criar novo status
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      
+        <!-- Botão de deletar ao lado -->
+        <button mat-raised-button color="warn" (click)="deletarItem(item.id)" class="delete-button">
+          Deletar Item
+        </button>
+      
+        <div *ngIf="mostrarCampoNovoStatus" class="novo-status-container">
+          <form [formGroup]="statusForm" (ngSubmit)="criarStatus()">
+            <div class="novo-status-content">
+              <mat-form-field appearance="outline" class="novo-status-input">
+                <mat-label>Digite um novo status</mat-label>
+                <input matInput formControlName="descricao_status">
+              </mat-form-field>
+              
+              <button mat-icon-button 
+                      class="check-button"
+                      type="submit" 
+                      matTooltip="Salvar Status">
+                <mat-icon class="mat-icon-button">check</mat-icon>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-
+      
       <h3>Adicionar Itens</h3>
       <div class="item-container">
         <mat-form-field appearance="outline">

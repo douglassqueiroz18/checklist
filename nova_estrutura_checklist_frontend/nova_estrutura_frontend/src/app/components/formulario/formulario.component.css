@@ -1,16 +1,18 @@
+/* ===== HOST PRINCIPAL ===== */
 :host {
   display: flex;
-  flex-direction: column; /* Empilha os elementos verticalmente */
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh; /* Alterado para min-height para conteúdo longo */
   background-color: #f7f7f7;
-  padding-top: 2rem;
+  padding: 2rem 1rem; /* Adicionado padding lateral para mobile */
+  font-family: 'Roboto', sans-serif;
 }
 
 .form-group {
   margin-bottom: 1.5rem;
   font-family: 'Roboto', sans-serif;
-  max-width: 400px;
+  max-width: 1100px;
   width: 100%;
 } 
 
@@ -56,14 +58,26 @@ option:first-child {
   font-style: italic;
   color: #888;
 }
-
+/* ===== LAYOUT RESPONSIVO DOS ITENS ===== */
+.content-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Layout responsivo automático */
+  gap: 20px;
+  width: 100%;
+}
 /* Responsividade */
 @media (max-width: 600px) {
   .form-group {
     max-width: 100%; /* Torna o formulário 100% da largura da tela em dispositivos móveis */
     padding: 0 1rem; /* Adiciona espaçamento nas laterais */
   }
-
+  .content-wrapper {
+    grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+  }
+  .content {
+    padding: 1rem; /* Padding menor em mobile */
+    border-radius: 8px; /* Bordas mais suaves */
+  }
   label {
     font-size: 1rem; /* Reduz o tamanho da fonte do label em telas menores */
   }
@@ -77,7 +91,7 @@ option:first-child {
   flex-direction: column; /* Organiza os elementos em coluna */
   gap: 20px; /* Espaço entre as seções */
   align-items: center;
-  padding-top: 2rem;
+  padding-top: 1rem;
 }
 
 .form-list li {
@@ -99,17 +113,18 @@ option:first-child {
   }
 }
 
-/* Estilo do título */
+/* ===== TÍTULO ===== */
 h2 {
   font-size: 2.5rem;
   font-weight: 700;
   color: #007bff;
   text-align: center;
-  margin-bottom: 1.5rem;
-  animation: fadeIn 1s ease-out, pulse 2s infinite 1s;
+  margin-bottom: 2rem; /* Aumentei o espaçamento */
   font-family: 'Roboto', sans-serif;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative; /* Para o pseudo-elemento */
+  padding-bottom: 1rem; /* Espaço para a linha decorativa */
 }
+
 
 /* Responsividade */
 @media (max-width: 600px) {
@@ -139,14 +154,66 @@ h2 {
   .itens-container p {
     font-size: 0.9rem;
   }
+  
 }
+/* Quando a tela for maior que 700px, altera o layout */
+@media (min-width: 749px) {
+  .item-status-group {
+    display: contents; /* Faz os filhos participarem do grid diretamente */
+  }
+}
+
+/* ===== AJUSTES PARA TELAS PEQUENAS ===== */
+@media (max-width: 749px) {
+  .content-wrapper {
+    grid-template-columns: 1fr; /* Uma única coluna */
+  }
+  
+  /* Garante que o status fique abaixo do item */
+  .itens-container {
+    grid-row: 1; /* Item fica na linha 1 */
+  }
+  
+  .item-container {
+    grid-row: 2; /* Status fica na linha 2 */
+    margin-top: 10px; /* Espaço entre item e status */
+  }
+    /* Garante que cada par item-status ocupe uma "linha virtual" do grid */
+    .itens-container + .item-container {
+      grid-column: 1; /* Alinha ambos na mesma coluna */
+    }
+} 
+/* Card de itens - MELHORADO */
 .itens-container {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.5s ease-out; /* Animação de entrada */
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.05); /* Borda sutil */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+/* Lista de itens - ESTILO MODERNO */
+.mat-list {
+  padding: 0;
+}
+.mat-list-item {
+  padding: 12px 16px !important;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  border-left: 3px solid #007bff; /* Destaque lateral */
+}
+.mat-list-item:hover {
+  background-color: #f5f5f5;
+}
+.mat-card {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+mat-card, mat-form-field {
+  min-width: 300px; /* Ajuste conforme necessário */
+  flex: 1;
 }
 /* Título da seção */
 .itens-container h3 {
@@ -190,4 +257,91 @@ h2 {
   color: #888;
   font-style: italic;
   margin: 0;
+}
+@media (max-width: 1000px) and (min-width: 600px) {
+  .item-container {
+    flex-wrap: wrap; /* Permite que os itens quebrem linha, mas sem forçar coluna */
+    justify-content: space-between;
+  }
+  .content-wrapper {
+    grid-template-columns: 1fr; /* Uma coluna */
+  }
+}
+
+/* Agora só empilha completamente em telas menores que 600px */
+@media (max-width: 1000px) {
+  .item-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+/* ===== CONTAINER PRINCIPAL ===== */
+.content {
+  width: 100%;
+  max-width: 1200px; /* Limite máximo para telas grandes */
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+  box-sizing: border-box; /* Garante que padding não some à largura */
+  margin: 0 auto;
+}
+
+/* ===== LAYOUT DOS ITENS ===== */
+.content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px; /* Aumentei o gap para mais espaço */
+  align-items: start; /* Alinha no topo */
+}
+/* ===== SELECT DE STATUS - ESTILO MELHORADO ===== */
+.item-container {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease; /* Transição suave para hover */
+  width: 100%; /* Ocupa 100% do espaço disponível */
+  box-sizing: border-box; /* Garante que padding não some à largura */
+}
+.item-container:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+mat-form-field {
+  width: 100%;
+}
+/* Estilo personalizado para o mat-select */
+.mat-select {
+  padding: 13px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+.modal-content mat-form-field {
+  width: 100%; /* Campo de input ocupa toda a largura do modal */
+  margin-bottom: 30px; /* Espaço entre os elementos */
+}
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+/* Efeitos de hover para opções */
+.mat-option:hover:not(.mat-option-disabled) {
+  background-color: rgba(66, 133, 244, 0.08) !important;
+}
+
+/* Opções do select - ESTILO MELHORADO */
+.mat-option {
+  padding: 12px 16px !important;
+  display: flex;
+  align-items: center;
+}
+.itens-container, mat-select, mat-option {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

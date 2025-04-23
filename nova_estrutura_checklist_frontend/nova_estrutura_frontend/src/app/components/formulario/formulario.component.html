@@ -26,34 +26,63 @@
 <div class="form-group">
   <mat-card class="form-card">
     <!-- Verifica se há formulários selecionados -->
-    <ul *ngIf="selecionarFormulario && selecionarFormulario.length > 0" class="form-list">
-      <!-- Itera sobre a lista de formulários selecionados -->
-      <li *ngFor="let formulario of selecionarFormulario">
-        {{ formulario.nome }} <!-- Exibe o nome do formulário -->
-        <mat-form-field>
-          <mat-label>Opções</mat-label>
-          <mat-select [(ngModel)]="novaOpcaoStatusSelecionada">
-            <mat-option *ngFor="let option of options" [value]="option.value">
-              {{ option.label }}
+    <div *ngIf="selecionarFormulario && selecionarFormulario.length > 0">
+      <h3>Formulários Selecionados</h3>
+      <ul class="form-list">
+        <!-- Itera sobre a lista de formulários selecionados -->
+        <li *ngFor="let formulario of selecionarFormulario">
+          <p>{{ formulario.nome }}</p> <!-- Exibe o nome do formulário -->
+          <mat-form-field appearance="outline" class="input-item">
+            <mat-label>Selecione um status</mat-label>
+            <mat-select [(ngModel)]="novaOpcaoStatusSelecionada" name="novaOpcao" (selectionChange)="onOptionSelected($event)">
+              <mat-option *ngFor="let option of options" [value]="option.value">
+                {{ option.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </li>
+      </ul>
+    </div>
+    <p *ngIf="selecionarFormulario && selecionarFormulario.length === 0">Nenhum formulário disponível.</p>
+
+    <div class="content">
+      <h2>Itens do Formulário</h2>
+      <div class="content-wrapper">
+        <mat-card *ngIf="itensSelecionados && itensSelecionados.length > 0" class="itens-container">
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item *ngFor="let item of itensSelecionados">
+                {{ item.item }}
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+    
+        <!-- Select para status (separado) -->
+        <mat-form-field appearance="outline" *ngIf="itensSelecionados && itensSelecionados.length > 0" class="item-container">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="statusSelecionado">
+            <mat-option *ngFor="let item of itensSelecionados" [value]="item.id">
+              <span>{{ item.item }}</span>
+              <span class="status-text">
+                - {{ statusPorItem[item.id]?.descricao_status || 'Carregando...' }}
+              </span>
             </mat-option>
           </mat-select>
         </mat-form-field>
-      </li>
-    </ul>
-    <p *ngIf="selecionarFormulario && selecionarFormulario.length === 0">Nenhum formulário disponível.</p>
-
-    <!-- Exibe os itens carregados -->
+      </div>
+    </div> 
+    <!--
     <div *ngIf="itensSelecionados && itensSelecionados.length > 0" class="itens-container">
       <h3>Itens do Formulário</h3>
       <ul>
         <li *ngFor="let item of itensSelecionados">
-          {{ item.item }} <!-- Exibe o nome do item (propriedade 'item' do objeto) -->
+          {{ item.item }} 
+          <span *ngIf="statusPorItem[item.id]"> - Status: {{ statusPorItem[item.id].descricao_status }}</span>
+          <span *ngIf="!statusPorItem[item.id]"> - Status: Carregando...</span>
         </li>
       </ul>
-    </div>
+    </div> --> 
     <p *ngIf="itensSelecionados && itensSelecionados.length === 0" class="itens-container">Nenhum item disponível.</p>
   </mat-card>
 </div>
-  
-
- 

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, NgZone, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder,  FormGroup,  FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ItensService } from '../../itens.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-formulario-modal',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatChipsModule, MatIconModule, MatListModule,MatSelectModule ],
+  imports: [CommonModule, MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatChipsModule, MatIconModule, MatListModule,MatSelectModule, ReactiveFormsModule],
   templateUrl: './formulario-modal.component.html',
   styleUrl: './formulario-modal.component.css'
 })
@@ -29,7 +29,7 @@ export class FormularioModalComponent {
   formularioTeste: any[] = [];
   itens: any[] = [];
   descricao = '';  // A descrição será enviada para o backend
-  novoFormulario: { id_formulario: number | null; nome: string; itens:string[] } = { id_formulario: null, nome: '', itens: [] }; // Para o formulário atual
+  novoFormulario: { id_formulario: number | null; nome: string; itens:string[] , id_status: number| null} = { id_formulario: null, nome: '', itens: [], id_status: null}; // Para o formulário atual
   dadosOriginais: any[] = [];
   titulo: string;
   formulario: any ={};
@@ -39,8 +39,12 @@ export class FormularioModalComponent {
   selectedStatus: string = ''; // Armazena a opção selecionada
   selectedOption: string = ''; // Define a propriedade para armazenar a opção selecionada
   novaOpcaoStatusSelecionada: string = ''; // Para armazenar a opção selecionada
-  novoStatus: any;
-  
+  mostrarCampoNovoStatus: boolean = false; // Inicialmente escondido
+  statusForm!: FormGroup;
+
+  //novoStatus: any;
+  novoStatus: any = { id_status: null }; 
+
   options: any[] = []; // Armazena as opções do select
   @Input() modalAberto: boolean = true;
   //@Input() formulario: any = {}; // Objeto do formulário recebido
@@ -54,9 +58,15 @@ constructor(
   private CriarFormularioService: CriarFormularioService,
   private cdRef: ChangeDetectorRef,
   private ngZone: NgZone,
-  private cdr: ChangeDetectorRef
-)
-{
+  private cdr: ChangeDetectorRef,
+  private fb: FormBuilder
+
+){
+  // Inicialização do FormGroup
+  this.statusForm = this.fb.group({
+    descricao_status: ['', Validators.required],
+  });
+
   // Atribuindo os dados recebidos ao título e formulário
   if (data && data.formulario) {
     this.formulario = data.formulario;
@@ -110,13 +120,18 @@ carregarItens() {
   this.ItensService.obterItensPorFormulario(this.formulario.id_formulario).subscribe(
     (data: any[]) => {
       this.ngZone.run(() => {
+        if(!data || data.length === 0){
+          console.warn("Nenhum item encontrado para este formulário.");
+          this.formularioTeste = [];
+          this.cdRef.detectChanges;
+          return;
+        }
         this.dadosOriginais = data;
         this.formularioTeste = data.map(itemPorFormulario => ({
           id: itemPorFormulario.id || itemPorFormulario.Id || null,
           descricao: itemPorFormulario.item || itemPorFormulario.itemDescricao || 'Descrição não encontrada',
           id_status: itemPorFormulario.id_status
         }));
-        console.log('dados do carregarItens ',this.dadosOriginais);
         this.cdRef.detectChanges();
       });
     },
@@ -127,15 +142,11 @@ carregarItens() {
 }
 
 
-  editarFormularioModal(formularioAtualizar: any) {
-    const id_a_ser_editado = this.formulario.id_formulario;
-    
-    console.log('duvida nos dados que estão indo', this.dadosOriginais[0]?.id);
+  editarFormularioModal(formularioTeste:any) {    
     const id = this.dadosOriginais[0]?.id;
     const primeiroItem = this.formularioTeste.length > 0 ? this.formularioTeste[0] : null;
     const idStatusSelecionado = primeiroItem ? primeiroItem.id_status : null;
-    console.log('Futuro Status',idStatusSelecionado);
-    console.log("testando a const id", id);
+    this.editarItem(this.formularioTeste);
     const formularioParaAtualizar = {
       id_formulario: this.formulario.id_formulario, 
       nome: this.formulario.nome, 
@@ -157,13 +168,12 @@ carregarItens() {
     );
   }
   editarItem(formularioTeste: any){
-    console.log('Item selecionado para edição:', formularioTeste);
-    console.log('Opção escolhida:', formularioTeste.id_status); // Mostra a opção escolhida do item específico
       const itemAtualizado = {
-      id: formularioTeste.id,        // Envia o ID do item na URL
-      item: formularioTeste.descricao || '',  // Envia a descrição do item ou qualquer outro campo relevante
-      selectedOption: formularioTeste.id_status, // Enviando a opção junto para conferência
+      id: formularioTeste[0].id,        // Envia o ID do item na URL
+      item: formularioTeste[0].descricao || '',  // Envia a descrição do item ou qualquer outro campo relevante
+      selectedOption: formularioTeste[0].id_status, // Enviando a opção junto para conferência
     };
+    console.log("teste douglas formulario-modal.component",itemAtualizado);
    this.ItensService.atualizarItem(itemAtualizado).subscribe(
     (updatedItem) => {
       this.itemParaEdicao = updatedItem;
@@ -179,41 +189,49 @@ carregarItens() {
   
   }
   // No seu componente .ts
-  
-  criarItem() {
-    console.log('dados que estão indo dentro do criar item variavel descricao', this.descricao);
-    console.log('dados que estão indo dentro do criar item variavel formulario', this.formulario);
 
+  criarItem() {
+    console.log('Começando a criarItem');
     if (!this.descricao.trim()) {
       console.error('A descrição do item não pode estar vazia.');
       return;
     }
+    if (!this.novoStatus || this.novoStatus.id_status === undefined) {
+      console.error('Erro: novoStatus não está definido ou não tem id_status');
+      return;
+    }
+    if (!this.formularioTeste[0].nome === undefined){
+      console.error("Erro: formulario vazio");
+      return;
+    }
     const body = {
       item: this.descricao,
-      formulario: this.novoFormulario.nome,
-      id_formulario: this.novoFormulario.id_formulario
+      formulario: this.formularioTeste[0].nome,
+      id_formulario: this.formularioTeste[0].id_formulario,
+      id_status: this.formularioTeste[0].id_status
     };
-    console.log('corpo de criar item',body);
+    console.log('teste douglassss', body);
     this.ItensService.enviarItem(body, this.formulario.nome, this.formulario.id_formulario, this.formulario.id_status).subscribe(
       (response: any) => {
-        const novoItem = { item: response.id_formulario, descricao: response.descricao, formulario: response.formulario, id_formulario: response.id_formulario };  // Supondo que o 'response' tenha a estrutura correta
+        const novoItem = { item: response.id_formulario, descricao: response.descricao, formulario: response.formulario, id_formulario: response.id_formulario, id_status: response.id_status };  // Supondo que o 'response' tenha a estrutura correta
         this.itens.push(novoItem);
         // Agora limpa o campo 'descricao' após a requisição ser bem-sucedida
         this.descricao = '';  // Limpa a variável de descrição após o envio
         this.sucessoCriacao = true;  // Ativa a exibição da mensagem de sucesso
-  
+        this.cdRef.detectChanges();
         setTimeout(() => {
           this.sucessoCriacao = false;  // Desativa após 3 segundos
         }, 3000); 
+        
       },
       (error: any) => {
         console.error('Erro ao criar item:', error);
       }
     );
+
   }
   deletarItem(itemId: string) {
     this.formularioTeste = this.formularioTeste.filter(item => item.id !== itemId);
-    console.log('testando o deletar item',this.formularioTeste);
     this.ItensService.deletarItem(itemId).subscribe({
       next: () => {
         console.log('Item deletado com sucesso!');
@@ -265,5 +283,8 @@ carregarItens() {
 onFormularioSelecionado(formulario: any): void {
   this.CriarFormularioService.selecionarFormulario(formulario);
   console.log('Formulário selecionado:', formulario);
+}
+abrirNovoStatus() {
+  this.mostrarCampoNovoStatus = true; // Exibe o campo ao clicar
 }
 }

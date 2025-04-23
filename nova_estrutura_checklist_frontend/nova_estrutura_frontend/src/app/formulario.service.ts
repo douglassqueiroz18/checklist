@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class FormularioService {
   private apiUrlGetSetores = '/api/setores';
   private apiUrlGetUsuarios = '/api/users';
+  private apiUrlGetStatus = '/api/itens/status_por_item';
   private formularioSelecionar: any = null;
   private novaOpcaoStatusSelecionada: any = null;
   constructor(private http: HttpClient) { }
@@ -31,8 +32,20 @@ export class FormularioService {
     return this.novaOpcaoStatusSelecionada;
   }
 
-  setStatusPorItem(status: any): any {
+  /*setStatusPorItem(status: any): any {
     this.novaOpcaoStatusSelecionada = status;
     console.log('vendo as opções selecionadas o formulario.service: ',this.novaOpcaoStatusSelecionada);
+  }*/
+  setStatusPorItem(id: any): Observable<any> {
+    return this.http.get(`${this.apiUrlGetStatus}/${id}`).pipe(
+      tap((response) => {
+        console.log("Resposta do servidor:", response);
+      }),
+      catchError((error) => {
+        console.error("Erro na requisição:", error);
+        return throwError(error); // Propaga o erro para quem chamou o método
+      })
+    );
   }
+  
 }
