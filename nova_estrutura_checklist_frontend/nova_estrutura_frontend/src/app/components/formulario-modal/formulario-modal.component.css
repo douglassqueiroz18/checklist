@@ -24,10 +24,63 @@
 
 
 .modal-actions {
-  margin-top: 40px;
   display: flex;
-  justify-content: space-around;
+  justify-content: center; /* Centraliza os botões */
+  gap: 16px; /* Espaçamento maior entre botões */
+  margin-top: 32px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12); /* Linha sutil de separação */
+  width: 100%;
 }
+
+.modal-actions button {
+  padding: 12px 32px; /* Botões mais generosos */
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px; /* Cantos mais arredondados */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  min-width: 120px; /* Largura mínima aumentada */
+  letter-spacing: 0.5px; /* Melhora a legibilidade */
+  cursor: pointer;
+}
+
+/* Botão primário (Salvar) */
+.modal-actions button[color="primary"] {
+  background-color: #3f51b5; /* Cor do Material Primary */
+  color: white;
+  box-shadow: 0 2px 6px rgba(63, 81, 181, 0.2);
+}
+
+.modal-actions button[color="primary"]:hover {
+  background-color: #303f9f;
+  box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Botão secundário (Fechar) */
+.modal-actions button.mat-button {
+  color: #3f51b5; /* Mesma cor do primary, mas sem fundo */
+  border: 1px solid rgba(63, 81, 181, 0.5);
+  background-color: transparent;
+}
+
+.modal-actions button.mat-button:hover {
+  background-color: rgba(63, 81, 181, 0.04);
+  border-color: #3f51b5;
+  transform: translateY(-1px);
+}
+
+/* Efeitos ativos para ambos */
+.modal-actions button:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+/* Efeito de foco para acessibilidade */
+.modal-actions button:focus-visible {
+  outline: 2px solid #3f51b5;
+  outline-offset: 2px;
+}
+
 /* Para telas grandes */
 .container {
   width: 80%;
@@ -92,6 +145,25 @@ mat-chip {
   gap: 15px;
   margin-bottom: 20px;
   align-items: flex-start;
+  border: 1px solid black;  /* Adiciona uma borda sólida preta de 1px */
+  padding: 20px;            /* Adiciona um espaçamento interno para não colar o conteúdo na borda */
+  border-radius: 4px;        /* Opcional: arredonda os cantos da borda */
+}
+.adicionar-item{
+  color: white;
+  background-color: #3698f4;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px; /* Ajuste de espaço interno */
+  border: none;
+  border-radius: 6px; /* Arredondamento igual aos outros botões */
+  cursor: pointer;
+  min-width: 120px; /* Evita que o botão fique muito pequeno */
+  white-space: nowrap; /* Impede que o texto quebre */
+  transform: translateY(5px)
+
 }
 .full-width {
   width: 100%;
